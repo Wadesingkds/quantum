@@ -1220,8 +1220,8 @@ async function updateUserBadge() {
     badge.classList.add('visible');
     
     // Check premium status
-    const isPremium = await checkPremiumStatus();
-    premiumBadge.style.display = isPremium ? 'inline-block' : 'none';
+    const premium = await isPremium();
+    premiumBadge.style.display = premium ? 'inline-block' : 'none';
     
     // Add logout on click
     badge.onclick = handleLogout;
