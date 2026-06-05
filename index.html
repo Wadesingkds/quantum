@@ -73,6 +73,13 @@
     transition: background-color 0.3s, color 0.3s;
   }
 
+  .content-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   body::before {
     content: '';
     position: fixed; inset: 0;
@@ -543,6 +550,9 @@
   <span class="user-badge-email" id="userEmail"></span>
   <span class="user-badge-premium" id="premiumBadge" style="display:none;">PREMIUM</span>
 </div>
+
+<!-- Content Wrapper (for body flexbox) -->
+<div class="content-wrapper">
 
 <!-- ══════════════════════════════════ -->
 <!--          PAGE: CALCULATOR          -->
@@ -1234,6 +1244,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+</div> <!-- Close content-wrapper -->
 
 </body>
 </html>
