@@ -271,6 +271,129 @@
     letter-spacing: 1px; opacity: 0.5; margin-top: 20px;
   }
 
+  /* ── TOAST NOTIFICATIONS ── */
+  #toastContainer {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 380px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(12px);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+    pointer-events: auto;
+    animation: toastSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .toast.removing {
+    animation: toastSlideOut 0.25s ease forwards;
+  }
+
+  @keyframes toastSlideIn {
+    from {
+      transform: translateX(120%) scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes toastSlideOut {
+    to {
+      transform: translateX(120%) scale(0.95);
+      opacity: 0;
+    }
+  }
+
+  .toast-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .toast-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toast-title {
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .toast-message {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+  }
+
+  .toast.success {
+    border-color: var(--buy-color);
+    background: rgba(34, 197, 94, 0.08);
+  }
+  .toast.success .toast-icon { color: var(--buy-color); }
+  .toast.success .toast-title { color: var(--buy-color); }
+
+  .toast.error {
+    border-color: var(--sell-color);
+    background: rgba(239, 68, 68, 0.08);
+  }
+  .toast.error .toast-icon { color: var(--sell-color); }
+  .toast.error .toast-title { color: var(--sell-color); }
+
+  .toast.warning {
+    border-color: #F59E0B;
+    background: rgba(245, 158, 11, 0.08);
+  }
+  .toast.warning .toast-icon { color: #F59E0B; }
+  .toast.warning .toast-title { color: #F59E0B; }
+
+  .toast.info {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.08);
+  }
+  .toast.info .toast-icon { color: var(--gold); }
+  .toast.info .toast-title { color: var(--gold); }
+
+  @media (max-width: 640px) {
+    #toastContainer {
+      top: auto;
+      bottom: 20px;
+      right: 16px;
+      left: 16px;
+      max-width: none;
+    }
+    .toast {
+      font-size: 13px;
+      padding: 12px 16px;
+    }
+  }
+
   /* ── SUBSCRIPTION PAGE ── */
   .sub-card {
     position: relative; z-index: 1;
@@ -376,6 +499,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
 
 <!-- User Info (fixed position, visible on all pages) -->
 <div id="userInfo" style="display:none;position:fixed;top:16px;right:16px;z-index:1000;padding:10px 16px;background:var(--bg-card);border:1px solid var(--gold);border-radius:6px;font-size:13px;color:var(--gold);backdrop-filter:blur(8px);box-shadow:var(--card-shadow);">
@@ -642,6 +768,50 @@
     btnPremium.style.display = premium ? 'none' : 'block';
   }
 
+  // ── TOAST NOTIFICATION SYSTEM ──
+  function showToast(message, type = 'info', title = '') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const icons = {
+      success: '✓',
+      error: '✗',
+      warning: '⚠',
+      info: 'ℹ'
+    };
+
+    const titles = {
+      success: title || 'SUCCESS',
+      error: title || 'ERROR',
+      warning: title || 'WARNING',
+      info: title || 'INFO'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">${icons[type] || icons.info}</div>
+      <div class="toast-content">
+        <div class="toast-title">${titles[type]}</div>
+        <div class="toast-message">${message}</div>
+      </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+      toast.classList.add('removing');
+      setTimeout(() => toast.remove(), 250);
+    }, 4000);
+
+    // Click to dismiss
+    toast.addEventListener('click', () => {
+      toast.classList.add('removing');
+      setTimeout(() => toast.remove(), 250);
+    });
+  }
+
   async function checkPremiumAccess() {
     // Check if logged in
     if (!currentUser && !localStorage.getItem('ql-user-email')) {
@@ -651,7 +821,7 @@
     
     const premium = await isPremium();
     if (!premium) {
-      alert('⚠️ Fitur Premium\\n\\nUpgrade ke Premium untuk akses penuh.');
+      showToast('Upgrade ke Premium untuk akses penuh', 'warning', 'PREMIUM REQUIRED');
       showPage('pageSub');
       return false;
     }
@@ -669,7 +839,7 @@
     // Get email for tracking
     const email = prompt('Masukkan email Anda untuk aktivasi:');
     if (!email || !email.includes('@')) {
-      alert('Email tidak valid');
+      showToast('Format email tidak valid', 'error', 'INVALID EMAIL');
       return;
     }
     
@@ -691,15 +861,15 @@
       const data = await res.json();
       
       if (data.checkoutUrl) {
+        // Redirect to payment page
         window.location.href = data.checkoutUrl;
       } else {
-        alert('Error: ' + (data.error || 'Gagal membuat link pembayaran'));
+        showToast(data.error || 'Gagal membuat link pembayaran', 'error', 'PAYMENT ERROR');
       }
     } catch (err) {
-      alert('Error: Tidak bisa menghubungi server pembayaran');
+      showToast('Tidak bisa menghubungi server pembayaran', 'error', 'CONNECTION ERROR');
       console.error(err);
     }
-  }
 
   // ── CALCULATOR ──
   function isValidInput(el, errEl) {
@@ -723,7 +893,7 @@
     // Check premium status
     const premium = await isPremium();
     if (!premium) {
-      alert('⚠️ Fitur Premium\n\nUpgrade ke Premium untuk akses penuh.');
+      showToast('Upgrade ke Premium untuk akses penuh', 'warning', 'PREMIUM REQUIRED');
       showPage('pageSub');
       return;
     }
@@ -902,7 +1072,7 @@ async function handleAuth(mode) {
   const password = document.getElementById('authPassword').value;
   
   if (!email || !password || password.length < 6) {
-    alert('Email & password (min 6 karakter) harus diisi');
+    showToast('Email & password (min 6 karakter) harus diisi', 'error', 'INVALID INPUT');
     return;
   }
   
@@ -917,7 +1087,7 @@ async function handleAuth(mode) {
     if (result.error) throw result.error;
     
     if (mode === 'signup') {
-      alert('✓ Akun dibuat! Cek email untuk verifikasi.');
+      showToast('Cek email untuk verifikasi akun', 'success', 'ACCOUNT CREATED');
       closeAuthModal();
       return;
     }
@@ -925,12 +1095,12 @@ async function handleAuth(mode) {
     currentUser = result.data.user;
     localStorage.setItem('ql-user-email', currentUser.email);
     closeAuthModal();
-    alert('✓ Login berhasil!');
-    // Show user info in header
-    document.getElementById('userInfo').style.display = 'block';
-    document.getElementById('userEmail').textContent = currentUser.email;
+    showToast('Login berhasil', 'success', 'WELCOME');
+    
+    // Refresh page to update UI
+    window.location.reload();
   } catch (err) {
-    alert('Error: ' + err.message);
+    showToast(err.message, 'error', 'AUTH ERROR');
   }
 }
 
@@ -945,9 +1115,10 @@ async function handleLogout() {
     localStorage.removeItem('ql-premium');
     // Hide user info in header
     document.getElementById('userInfo').style.display = 'none';
-    alert('✓ Logout berhasil');
+    showToast('Logout berhasil', 'success', 'LOGGED OUT');
+    window.location.reload();
   } catch (err) {
-    alert('Error: ' + err.message);
+    showToast(err.message, 'error', 'LOGOUT ERROR');
   }
 }
 
@@ -957,7 +1128,7 @@ window.handleLogout = handleLogout;
 async function handleResetPassword() {
   const email = document.getElementById('authEmail').value;
   if (!email || !email.includes('@')) {
-    alert('Masukkan email yang valid untuk reset password');
+    showToast('Masukkan email yang valid', 'error', 'INVALID EMAIL');
     return;
   }
   
@@ -966,10 +1137,10 @@ async function handleResetPassword() {
       redirectTo: window.location.origin
     });
     if (error) throw error;
-    alert('✓ Link reset password sudah dikirim ke email Anda');
+    showToast('Link reset password sudah dikirim ke email', 'success', 'EMAIL SENT');
     closeAuthModal();
   } catch (err) {
-    alert('Error: ' + err.message);
+    showToast(err.message, 'error', 'RESET ERROR');
   }
 }
 
@@ -983,7 +1154,7 @@ async function handleGoogleAuth() {
     });
     if (error) throw error;
   } catch (err) {
-    alert('Error: ' + err.message);
+    showToast(err.message, 'error', 'GOOGLE AUTH ERROR');
   }
 }
 
