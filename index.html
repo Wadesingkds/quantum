@@ -1111,6 +1111,9 @@ const supabaseClient = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlcWp2eHN4b3ZvYnBmaXNqeWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MDI5MjIsImV4cCI6MjA5NjE3ODkyMn0.qF8HJhGrBhO5H1FcLE0OryA3_P57N6pbv4Bn_SCps1I'
 );
 
+// Forward declarations to avoid hoisting issues
+let updateUserBadge, fetchGoldPrice;
+
 // Check session on load + auth state listener
 supabaseClient.auth.onAuthStateChange(async (event, session) => {
   if (session && session.user) {
@@ -1210,7 +1213,7 @@ async function handleLogout() {
 window.handleLogout = handleLogout;
 
 // Update user badge visibility and premium status
-async function updateUserBadge() {
+updateUserBadge = async function() {
   const badge = document.getElementById('userBadge');
   const emailSpan = document.getElementById('userEmail');
   const premiumBadge = document.getElementById('premiumBadge');
@@ -1232,7 +1235,7 @@ async function updateUserBadge() {
 
 // Fetch live gold price from MetalPriceAPI
 let lastGoldPrice = null;
-async function fetchGoldPrice() {
+fetchGoldPrice = async function() {
   try {
     const response = await fetch('https://api.metalpriceapi.com/v1/latest?api_key=c7322589173a35411963663bd2a52683&base=USD&currencies=XAU', {
       cache: 'no-store'
