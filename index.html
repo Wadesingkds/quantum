@@ -1083,12 +1083,11 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
 // Fallback: Force show if localStorage exists (for page refresh after payment)
 window.addEventListener('DOMContentLoaded', async () => {
   const storedEmail = localStorage.getItem('ql-user-email');
-  const userInfoEl = document.getElementById('userInfo');
-  const userEmailEl = document.getElementById('userEmail');
   
-  if (storedEmail && userInfoEl && userEmailEl) {
-    userInfoEl.style.display = 'block';
-    userEmailEl.textContent = storedEmail;
+  if (storedEmail) {
+    // Set currentUser from localStorage for fallback
+    currentUser = { email: storedEmail };
+    await updateUserBadge();
   }
   
   // Update premium button on page load
