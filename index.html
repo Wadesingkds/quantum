@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="XAUUSD Price Projection dengan Gann Square of 9 Method">
+<meta name="theme-color" content="#D4AF37">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="QUANTUM">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <title>QUANTUM Leaps — Gann Square of 9</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -988,6 +996,15 @@ window.closeAuthModal = closeAuthModal;
 // Attach event listeners after DOM ready
 document.getElementById('btnSignup')?.addEventListener('click', () => handleAuth('signup'));
 document.getElementById('btnLogin')?.addEventListener('click', () => handleAuth('login'));
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✓ Service Worker registered:', reg.scope))
+      .catch(err => console.error('✗ Service Worker registration failed:', err));
+  });
+}
 </script>
 
 </body>
