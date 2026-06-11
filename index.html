@@ -163,6 +163,10 @@
     font-size: 13px;
     color: var(--text-primary);
     font-weight: 500;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .user-badge-premium {
     font-size: 10px;
@@ -172,6 +176,21 @@
     border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 1px;
+  }
+
+  /* Mobile: badge flows inside card (static) so it can't overlap the title */
+  @media (max-width: 640px) {
+    .user-badge {
+      position: static;
+      top: auto;
+      right: auto;
+      margin: 0 44px 14px auto;
+      width: fit-content;
+      max-width: calc(100% - 44px);
+      padding: 6px 10px;
+    }
+    .user-badge-email { max-width: 150px; font-size: 12px; }
+    .user-badge-premium { font-size: 9px; padding: 1px 5px; }
   }
 
   /* ── TYPOGRAPHY ── */
@@ -545,12 +564,6 @@
 <!-- Toast Container -->
 <div id="toastContainer"></div>
 
-<!-- User Info Badge (new shadcn style) -->
-<div class="user-badge" id="userBadge">
-  <span class="user-badge-email" id="userEmail"></span>
-  <span class="user-badge-premium" id="premiumBadge" style="display:none;">PREMIUM</span>
-</div>
-
 <!-- Content Wrapper (for body flexbox) -->
 <div class="content-wrapper">
 
@@ -560,6 +573,12 @@
 <div class="page active" id="pageCalc">
 <div class="card">
   <div class="card-top-line"></div>
+
+  <!-- User Info Badge (new shadcn style) -->
+  <div class="user-badge" id="userBadge">
+    <span class="user-badge-email" id="userEmail"></span>
+    <span class="user-badge-premium" id="premiumBadge" style="display:none;">PREMIUM</span>
+  </div>
 
   <!-- Theme Toggle -->
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">☀️</button>
@@ -608,6 +627,7 @@
   <button class="btn-premium" onclick="showPage('pageSub')">
     ✦ &nbsp;UPGRADE TO PREMIUM
   </button>
+
   <button class="btn-reset" onclick="handleLogout()" id="logoutBtn" style="display:none;">↗ &nbsp;LOGOUT</button>
 
   <!-- Results -->
@@ -640,6 +660,15 @@
           </button>
         </div>
       </div>
+      <div class="result-row buy">
+        <span class="result-name buy">BUY3</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="result-value" id="val-buy3">—</span>
+          <button class="btn-copy-single" onclick="copySingle('val-buy3','BUY3')">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
     <div id="sellGroup" class="result-group" style="border:1px solid rgba(239,68,68,0.12);border-radius:8px;display:none;">
@@ -661,10 +690,19 @@
           </button>
         </div>
       </div>
+      <div class="result-row sell">
+        <span class="result-name sell">SELL3</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="result-value" id="val-sell3">—</span>
+          <button class="btn-copy-single" onclick="copySingle('val-sell3','SELL3')">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="footer-note">GANN SQUARE ROOT METHOD — NOT FINANCIAL ADVICE</div>
+  <div class="footer-note">GANN SQUARE ROOT METHOD<br><span style="display:inline-block;margin-top:6px;">— NOT FINANCIAL ADVICE —</span></div>
 </div>
 </div>
 
@@ -684,78 +722,32 @@
     <div class="sub-desc">Fitur eksklusif untuk trader serius</div>
   </div>
 
-  <!-- FREE TRIAL -->
-  <div class="plan-card">
-    <div class="plan-top">
-      <div>
-        <div class="plan-name">FREE TRIAL</div>
-        <div class="plan-period">Akses penuh selama 3 hari</div>
-      </div>
-      <div class="plan-price">
-        <div class="plan-amount">Rp 0</div>
-        <div class="plan-currency">3 hari</div>
-      </div>
-    </div>
-    <ul class="plan-features">
-      <li><span class="check">✓</span> Semua fitur Premium aktif</li>
-      <li><span class="check">✓</span> Multi-timeframe M1 & M5</li>
-      <li><span class="check">✓</span> Confluence Detector</li>
-      <li><span class="check">✓</span> Save History & Export PNG</li>
-      <li><span class="check">✓</span> Tidak perlu kartu kredit</li>
-    </ul>
-    <button class="btn-subscribe" style="background:transparent;border:1px solid var(--gold);color:var(--gold);box-shadow:none;margin-top:16px;" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'" onclick="handleSubscribe('trial')">
-      COBA GRATIS 3 HARI
-    </button>
-  </div>
 
-  <!-- MONTHLY -->
+
+  <!-- ONE-TIME OFFER -->
   <div class="plan-card popular">
-    <div class="popular-badge">✦ MOST POPULAR</div>
+    <div class="popular-badge">✦ HARGA HARI INI</div>
     <div class="plan-top">
       <div>
-        <div class="plan-name" style="color:var(--gold-light);">MONTHLY</div>
-        <div class="plan-period">Per bulan · cancel anytime</div>
+        <div class="plan-name" style="color:var(--gold-light);">PREMIUM ACCESS</div>
+        <div class="plan-period">Bayar sekali · akses selamanya</div>
       </div>
       <div class="plan-price">
-        <div class="plan-amount">Rp 300K</div>
-        <div class="plan-currency">/ bulan</div>
+        <div class="plan-amount">Rp 500K</div>
+        <div class="plan-currency">one-time</div>
       </div>
     </div>
     <ul class="plan-features">
-      <li><span class="check">✓</span> Semua fitur FREE</li>
       <li><span class="check">✓</span> <strong>Multi-timeframe M1 & M5</strong></li>
       <li><span class="check">✓</span> <strong>Confluence Detector</strong></li>
       <li><span class="check">✓</span> Save History (localStorage)</li>
       <li><span class="check">✓</span> Export PNG — share ke grup</li>
       <li><span class="check">✓</span> Custom Offset (atur sendiri)</li>
       <li><span class="check">✓</span> Priority support via WhatsApp</li>
-    </ul>
-    <button class="btn-subscribe" onclick="handleSubscribe('monthly')">
-      BERLANGGANAN BULANAN
-    </button>
-  </div>
-
-  <!-- LIFETIME -->
-  <div class="plan-card" style="border-color:var(--gold-dim);">
-    <div class="plan-top">
-      <div>
-        <div class="plan-name" style="color:var(--gold-light);">LIFETIME</div>
-        <div class="plan-period">Bayar sekali · akses selamanya</div>
-      </div>
-      <div class="plan-price">
-        <div class="plan-amount">Rp 3JT</div>
-        <div class="plan-currency">one-time</div>
-        <div class="plan-save">≈ Rp 250K/bulan</div>
-      </div>
-    </div>
-    <ul class="plan-features">
-      <li><span class="check">✓</span> Semua fitur Monthly</li>
       <li><span class="check">✓</span> Semua update fitur selamanya</li>
-      <li><span class="check">✓</span> Early access fitur baru</li>
-      <li><span class="check">✓</span> VIP support direct WA</li>
     </ul>
-    <button class="btn-subscribe" style="background:linear-gradient(135deg,#6B4F0A,#B8960C,#7A5C0E);" onclick="handleSubscribe('lifetime')">
-      BELI LIFETIME ACCESS
+    <button class="btn-subscribe" onclick="handleSubscribe('premium')">
+      BELI SEKARANG
     </button>
   </div>
 
@@ -873,38 +865,73 @@
     return true;
   }
 
-  // ── SUBSCRIBE (placeholder) ──
+  // ── SUBSCRIBE ──
   async function handleSubscribe(plan) {
     const prices = {
       trial: 0,
-      monthly: 300000,
-      lifetime: 3000000
+      monthly: 100000,
+      lifetime: 1000000
     };
-    
-    // Get email for tracking
-    const email = prompt('Masukkan email Anda untuk aktivasi:');
+
+    // Get email for tracking — prefer logged-in user, else prompt
+    let email = (currentUser && currentUser.email) || localStorage.getItem('ql-user-email');
+    if (!email) {
+      email = prompt('Masukkan email Anda untuk aktivasi:');
+    }
     if (!email || !email.includes('@')) {
       showToast('Format email tidak valid', 'error', 'INVALID EMAIL');
       return;
     }
-    
+
     // Save email to localStorage
     localStorage.setItem('ql-user-email', email);
     localStorage.setItem('ql-pending-plan', plan);
-    
+
+    // ── FREE TRIAL: activate directly in Supabase, skip Pakasir (Rp 0 not supported) ──
+    if (plan === 'trial') {
+      try {
+        const res = await fetch('/api/subscription/trial', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.ok) {
+          localStorage.setItem('ql-premium', 'true');
+          if (data.alreadyPremium) {
+            showToast('Akun kamu sudah premium', 'success', 'SUDAH AKTIF');
+          } else {
+            showToast('Trial 3 hari aktif. Selamat mencoba!', 'success', 'TRIAL AKTIF');
+          }
+          // refresh UI state then go to calculator
+          if (typeof updateUserBadge === 'function') await updateUserBadge();
+          if (typeof updatePremiumButton === 'function') await updatePremiumButton();
+          showPage('pageCalc');
+        } else {
+          showToast(data.error || 'Gagal mengaktifkan trial', 'error', 'TRIAL ERROR');
+        }
+      } catch (err) {
+        showToast('Tidak bisa menghubungi server', 'error', 'CONNECTION ERROR');
+        console.error(err);
+      }
+      return;
+    }
+
+    // ── PAID PLANS: route through Pakasir ──
     try {
       const res = await fetch('/api/pakasir/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          plan, 
+        body: JSON.stringify({
+          plan,
           amount: prices[plan],
           email: email,
           timestamp: Date.now()
         })
       });
       const data = await res.json();
-      
+
       if (data.checkoutUrl) {
         // Redirect to payment page
         window.location.href = data.checkoutUrl;
@@ -975,6 +1002,7 @@
         const high = parseFloat(highEl.value);
         document.getElementById('val-buy1').textContent = Math.pow(Math.sqrt(high) - 0.125, 2).toFixed(2);
         document.getElementById('val-buy2').textContent = Math.pow(Math.sqrt(high) - 0.175, 2).toFixed(2);
+        document.getElementById('val-buy3').textContent = Math.pow(Math.sqrt(high) - 0.250, 2).toFixed(2);
         buyGroup.style.display = 'block';
       } else { buyGroup.style.display = 'none'; }
 
@@ -982,6 +1010,7 @@
         const low = parseFloat(lowEl.value);
         document.getElementById('val-sell1').textContent = Math.pow(Math.sqrt(low) + 0.125, 2).toFixed(2);
         document.getElementById('val-sell2').textContent = Math.pow(Math.sqrt(low) + 0.175, 2).toFixed(2);
+        document.getElementById('val-sell3').textContent = Math.pow(Math.sqrt(low) + 0.250, 2).toFixed(2);
         sellGroup.style.display = 'block';
       } else { sellGroup.style.display = 'none'; }
 
@@ -1010,15 +1039,17 @@
     const low  = document.getElementById('swingLow').value;
     const b1 = document.getElementById('val-buy1').textContent;
     const b2 = document.getElementById('val-buy2').textContent;
+    const b3 = document.getElementById('val-buy3').textContent;
     const s1 = document.getElementById('val-sell1').textContent;
     const s2 = document.getElementById('val-sell2').textContent;
+    const s3 = document.getElementById('val-sell3').textContent;
 
     let lines = ['QUANTUM Leaps — Gann Square of 9','XAUUSD Price Projection','───────────────────────'];
     if (high) lines.push(`Swing High : ${high}`);
     if (low)  lines.push(`Swing Low  : ${low}`);
     lines.push('');
-    if (high) { lines.push('BUY LEVELS'); lines.push(`BUY1  : ${b1}`); lines.push(`BUY2  : ${b2}`); lines.push(''); }
-    if (low)  { lines.push('SELL LEVELS'); lines.push(`SELL1 : ${s1}`); lines.push(`SELL2 : ${s2}`); lines.push(''); }
+    if (high) { lines.push('BUY LEVELS'); lines.push(`BUY1  : ${b1}`); lines.push(`BUY2  : ${b2}`); lines.push(`BUY3  : ${b3}`); lines.push(''); }
+    if (low)  { lines.push('SELL LEVELS'); lines.push(`SELL1 : ${s1}`); lines.push(`SELL2 : ${s2}`); lines.push(`SELL3 : ${s3}`); lines.push(''); }
     lines.push('───────────────────────');
 
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
@@ -1176,18 +1207,23 @@ updateUserBadge = async function() {
   const emailSpan = document.getElementById('userEmail');
   const premiumBadge = document.getElementById('premiumBadge');
   
+  const logoutBtn = document.getElementById('logoutBtn');
+
   if (currentUser) {
     emailSpan.textContent = currentUser.email;
+    emailSpan.title = currentUser.email;
     badge.classList.add('visible');
-    
+
     // Check premium status
     const premium = await isPremium();
     premiumBadge.style.display = premium ? 'inline-block' : 'none';
-    
-    // Add logout on click
-    badge.onclick = handleLogout;
+
+    // Show explicit logout button (badge is display-only now)
+    if (logoutBtn) logoutBtn.style.display = 'block';
+    badge.onclick = null;
   } else {
     badge.classList.remove('visible');
+    if (logoutBtn) logoutBtn.style.display = 'none';
   }
 }
 

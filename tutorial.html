@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial Penggunaan - Quantum Leaps</title>
+<style>
+:root {
+  --bg-dark: #080A0D;
+  --gold: #D4AF37;
+  --gold-light: #F0D060;
+  --gold-dim: rgba(212,175,55,0.15);
+  --text-dim: #6B7A8D;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg-dark);
+  color: #E8E0CC;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.header h1 {
+  font-size: 42px;
+  color: var(--gold);
+  margin: 0 0 10px 0;
+  letter-spacing: 2px;
+}
+
+.header p {
+  font-size: 18px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  border: 2px solid var(--gold-dim);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.video-placeholder .icon {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.feature-card {
+  background: rgba(255,255,255,0.03);
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid var(--gold-dim);
+}
+
+.feature-card h3 {
+  color: var(--gold-light);
+  margin: 0 0 12px 0;
+  font-size: 20px;
+}
+
+.feature-card p {
+  color: var(--text-dim);
+  margin: 0;
+  font-size: 15px;
+}
+
+.cta {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: var(--gold);
+  color: var(--bg-dark);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 10px;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: var(--gold-light);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+
+.btn-secondary:hover {
+  background: var(--gold-dim);
+}
+
+.loading {
+  text-align: center;
+  padding: 100px 20px;
+  color: var(--text-dim);
+}
+
+.error {
+  text-align: center;
+  padding: 60px 20px;
+  color: #E57373;
+}
+
+.error h2 {
+  font-size: 28px;
+  margin: 0 0 15px 0;
+}
+
+.error p {
+  font-size: 16px;
+  color: var(--text-dim);
+  margin: 0 0 30px 0;
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="loading" class="loading">
+  <div style="font-size:40px;margin-bottom:20px;">⏳</div>
+  <p>Memverifikasi akses Anda...</p>
+</div>
+
+<div id="error" class="error" style="display:none;">
+  <h2>⚠️ Akses Ditolak</h2>
+  <p>Tutorial ini hanya untuk member Premium.</p>
+  <a href="/" class="btn">UPGRADE KE PREMIUM</a>
+</div>
+
+<div id="content" class="container" style="display:none;">
+  <div class="header">
+    <h1>📹 TUTORIAL PENGGUNAAN</h1>
+    <p>Panduan lengkap menggunakan Quantum Leaps — Gann Square of 9 Calculator</p>
+  </div>
+
+  <div class="video-wrapper">
+    <div class="video-placeholder">
+      <div class="icon">🎬</div>
+      <p>Video tutorial akan segera tersedia</p>
+    </div>
+    <!-- Uncomment when video ready:
+    <iframe 
+      src="https://www.youtube.com/embed/YOUR_VIDEO_ID" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen>
+    </iframe>
+    -->
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <h3>🎯 Multi-Timeframe</h3>
+      <p>Cara menggunakan proyeksi M1 dan M5 untuk entry timing yang lebih akurat.</p>
+    </div>
+    <div class="feature-card">
+      <h3>✦ Confluence Detector</h3>
+      <p>Identifikasi level kritis dimana beberapa Gann angle bertemu.</p>
+    </div>
+    <div class="feature-card">
+      <h3>💾 Save & Export</h3>
+      <p>Simpan history kalkulasi dan export hasil sebagai gambar PNG.</p>
+    </div>
+    <div class="feature-card">
+      <h3>⚙️ Custom Offset</h3>
+      <p>Sesuaikan parameter kalkulasi sesuai strategi trading Anda.</p>
+    </div>
+  </div>
+
+  <div class="cta">
+    <a href="/" class="btn">MULAI KALKULASI</a>
+    <a href="https://wa.me/6281234567890" class="btn btn-secondary" target="_blank">
+      💬 SUPPORT VIA WHATSAPP
+    </a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://deqjvxsxovobpfisjyhg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlcWp2eHN4b3ZvYnBmaXNqeWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MDI5MjIsImV4cCI6MjA5NjE3ODkyMn0.qF8HJhGrBhO5H1FcLE0OryA3_P57N6pbv4Bn_SCps1I';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function checkAccess() {
+  const loading = document.getElementById('loading');
+  const error = document.getElementById('error');
+  const content = document.getElementById('content');
+
+  try {
+    // Check auth session
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      // Fallback: check localStorage (for users who paid via Pakasir)
+      const isPremium = localStorage.getItem('ql-premium') === 'true';
+      if (!isPremium) {
+        loading.style.display = 'none';
+        error.style.display = 'block';
+        return;
+      }
+    } else {
+      // Check subscription status in Supabase
+      const { data: subscription, error: subError } = await supabase
+        .from('subscriptions')
+        .select('status, expires_at')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (subError || !subscription || subscription.status !== 'active') {
+        loading.style.display = 'none';
+        error.style.display = 'block';
+        return;
+      }
+
+      // Check if subscription expired
+      if (subscription.expires_at && new Date(subscription.expires_at) < new Date()) {
+        loading.style.display = 'none';
+        error.style.display = 'block';
+        return;
+      }
+    }
+
+    // Access granted
+    loading.style.display = 'none';
+    content.style.display = 'block';
+
+  } catch (err) {
+    console.error('Access check failed:', err);
+    loading.style.display = 'none';
+    error.style.display = 'block';
+  }
+}
+
+checkAccess();
+</script>
+</body>
+</html>
