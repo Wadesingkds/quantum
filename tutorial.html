@@ -228,14 +228,41 @@ body {
 const SUPABASE_URL = 'https://deqjvxsxovobpfisjyhg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlcWp2eHN4b3ZvYnBmaXNqeWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MDI5MjIsImV4cCI6MjA5NjE3ODkyMn0.qF8HJhGrBhO5H1FcLE0OryA3_P57N6pbv4Bn_SCps1I';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const TIMEOUT_MS = 10000; // 10 detik max
 
 async function checkAccess() {
   const loading = document.getElementById('loading');
   const error = document.getElementById('error');
   const content = document.getElementById('content');
 
+  function showError() {
+    loading.style.display = 'none';
+    error.style.display = 'block';
+  }
+
+  function showContent() {
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  }
+
+  // Timeout fallback — kalau 10 detik belum selesai, tampilkan error
+  const timer = setTimeout(function() {
+    console.error('Access check timed out after ' + TIMEOUT_MS + 'ms');
+    showError();
+  }, TIMEOUT_MS);
+
   try {
+    // Cek apakah Supabase library berhasil load
+    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+      console.error('Supabase library failed to load from CDN');
+      clearTimeout(timer);
+      showError();
+      return;
+    }
+
+    // Create client di dalam try/catch
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // Check auth session
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -243,40 +270,44 @@ async function checkAccess() {
       // Fallback: check localStorage (for users who paid via Pakasir)
       const isPremium = localStorage.getItem('ql-premium') === 'true';
       if (!isPremium) {
-        loading.style.display = 'none';
-        error.style.display = 'block';
+        clearTimeout(timer);
+        showError();
         return;
       }
-    } else {
-      // Check subscription status in Supabase
-      const { data: subscription, error: subError } = await supabase
-        .from('subscriptions')
-        .select('status, expires_at')
-        .eq('user_id', session.user.id)
-        .single();
+      // Premium via localStorage — grant access
+      clearTimeout(timer);
+      showContent();
+      return;
+    }
 
-      if (subError || !subscription || subscription.status !== 'active') {
-        loading.style.display = 'none';
-        error.style.display = 'block';
-        return;
-      }
+    // Check subscription status in Supabase
+    const { data: subscription, error: subError } = await supabase
+      .from('subscriptions')
+      .select('status, expires_at')
+      .eq('user_id', session.user.id)
+      .single();
 
-      // Check if subscription expired
-      if (subscription.expires_at && new Date(subscription.expires_at) < new Date()) {
-        loading.style.display = 'none';
-        error.style.display = 'block';
-        return;
-      }
+    if (subError || !subscription || subscription.status !== 'active') {
+      clearTimeout(timer);
+      showError();
+      return;
+    }
+
+    // Check if subscription expired
+    if (subscription.expires_at && new Date(subscription.expires_at) < new Date()) {
+      clearTimeout(timer);
+      showError();
+      return;
     }
 
     // Access granted
-    loading.style.display = 'none';
-    content.style.display = 'block';
+    clearTimeout(timer);
+    showContent();
 
   } catch (err) {
     console.error('Access check failed:', err);
-    loading.style.display = 'none';
-    error.style.display = 'block';
+    clearTimeout(timer);
+    showError();
   }
 }
 
