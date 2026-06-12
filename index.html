@@ -786,16 +786,18 @@
 
   // ── PREMIUM CHECK ──
   async function isPremium() {
-    const email = localStorage.getItem('ql-user-email');
-    if (!email) return false;
-    
+    // Require authenticated Supabase session
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return false;
+
     try {
-      const res = await fetch(`/api/subscription/check?email=${encodeURIComponent(email)}`);
+      const res = await fetch('/api/subscription/check', {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      });
       const data = await res.json();
       return data.premium || false;
     } catch {
-      // Fallback to localStorage
-      return localStorage.getItem('ql-premium') === 'true';
+      return false;
     }
   }
 
@@ -854,12 +856,13 @@
   }
 
   async function checkPremiumAccess() {
-    // Check if logged in
-    if (!currentUser && !localStorage.getItem('ql-user-email')) {
+    // Require Supabase auth session
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
       showAuthModal();
       return false;
     }
-    
+
     const premium = await isPremium();
     if (!premium) {
       showToast('Upgrade ke Premium untuk akses penuh', 'warning', 'PREMIUM REQUIRED');
@@ -871,35 +874,22 @@
 
   // ── SUBSCRIBE ──
   async function handleSubscribe(plan) {
-    const prices = {
-      monthly: 100000,
-      lifetime: 1000000
-    };
-
-    // Get email for tracking — prefer logged-in user, else prompt
-    let email = (currentUser && currentUser.email) || localStorage.getItem('ql-user-email');
-    if (!email) {
-      email = prompt('Masukkan email Anda untuk aktivasi:');
-    }
-    if (!email || !email.includes('@')) {
-      showToast('Format email tidak valid', 'error', 'INVALID EMAIL');
+    // Require authenticated session — no email prompt fallback
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      showToast('Login dulu sebelum subscribe', 'warning', 'LOGIN REQUIRED');
+      showAuthModal();
       return;
     }
-
-    // Save email to localStorage
-    localStorage.setItem('ql-user-email', email);
-
     // ── PAID PLANS: route through Pakasir ──
     try {
       const res = await fetch('/api/pakasir/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          plan,
-          amount: prices[plan],
-          email: email,
-          timestamp: Date.now()
-        })
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ plan })
       });
       const data = await res.json();
 
@@ -1094,14 +1084,6 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
 
 // Fallback: Force show if localStorage exists (for page refresh after payment)
 window.addEventListener('DOMContentLoaded', async () => {
-  const storedEmail = localStorage.getItem('ql-user-email');
-  
-  if (storedEmail) {
-    // Set currentUser from localStorage for fallback
-    currentUser = { email: storedEmail };
-    await updateUserBadge();
-  }
-  
   // Update premium button on page load
   await updatePremiumButton();
 });
