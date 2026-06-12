@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT NOT NULL UNIQUE,
-  plan TEXT NOT NULL CHECK (plan IN ('trial', 'monthly', 'lifetime')),
+  plan TEXT NOT NULL CHECK (plan IN ('monthly', 'lifetime')),
   status TEXT NOT NULL CHECK (status IN ('active', 'expired', 'pending', 'cancelled')) DEFAULT 'pending',
   expires_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),

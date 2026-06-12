@@ -872,7 +872,6 @@
   // ── SUBSCRIBE ──
   async function handleSubscribe(plan) {
     const prices = {
-      trial: 0,
       monthly: 100000,
       lifetime: 1000000
     };
@@ -889,38 +888,6 @@
 
     // Save email to localStorage
     localStorage.setItem('ql-user-email', email);
-    localStorage.setItem('ql-pending-plan', plan);
-
-    // ── FREE TRIAL: activate directly in Supabase, skip Pakasir (Rp 0 not supported) ──
-    if (plan === 'trial') {
-      try {
-        const res = await fetch('/api/subscription/trial', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-        const data = await res.json();
-
-        if (res.ok && data.ok) {
-          localStorage.setItem('ql-premium', 'true');
-          if (data.alreadyPremium) {
-            showToast('Akun kamu sudah premium', 'success', 'SUDAH AKTIF');
-          } else {
-            showToast('Trial 3 hari aktif. Selamat mencoba!', 'success', 'TRIAL AKTIF');
-          }
-          // refresh UI state then go to calculator
-          if (typeof updateUserBadge === 'function') await updateUserBadge();
-          if (typeof updatePremiumButton === 'function') await updatePremiumButton();
-          showPage('pageCalc');
-        } else {
-          showToast(data.error || 'Gagal mengaktifkan trial', 'error', 'TRIAL ERROR');
-        }
-      } catch (err) {
-        showToast('Tidak bisa menghubungi server', 'error', 'CONNECTION ERROR');
-        console.error(err);
-      }
-      return;
-    }
 
     // ── PAID PLANS: route through Pakasir ──
     try {

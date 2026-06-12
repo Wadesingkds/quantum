@@ -1,6 +1,6 @@
 // Pakasir Checkout API
 // POST /api/pakasir/checkout
-// Body: { plan: 'trial'|'monthly'|'lifetime', amount: number, email: string }
+// Body: { plan: 'monthly'|'lifetime', amount: number, email: string }
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -27,7 +27,6 @@ export default async function handler(req, res) {
   if (SUPABASE_URL && SUPABASE_KEY) {
     try {
       const expiresAt = plan === 'lifetime' ? null :
-        plan === 'trial' ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() :
         new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
       await fetch(`${SUPABASE_URL}/rest/v1/subscriptions`, {
