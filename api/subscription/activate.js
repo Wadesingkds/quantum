@@ -4,8 +4,7 @@
 // This replaces the old success.html direct localStorage activation
 
 const PLAN_PRICES = {
-  monthly: 100000,
-  lifetime: 1000000
+  lifetime: 500000
 };
 
 export default async function handler(req, res) {

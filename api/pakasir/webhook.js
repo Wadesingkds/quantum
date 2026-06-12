@@ -80,7 +80,7 @@ export default async function handler(req, res) {
         }
 
         // Verify amount matches expected plan price
-        const PLAN_PRICES = { monthly: 100000, lifetime: 1000000 };
+        const PLAN_PRICES = { lifetime: 500000 };
         const expectedAmount = PLAN_PRICES[sub.plan];
         if (expectedAmount && amount && Number(amount) < expectedAmount) {
           console.error(`[Pakasir Webhook] Amount mismatch: got ${amount}, expected ${expectedAmount}`);
