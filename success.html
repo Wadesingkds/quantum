@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pembayaran Berhasil - Quantum Leaps</title>
+<title>Pembayaran - Quantum Leaps</title>
 <style>
 body {
   margin: 0;
@@ -48,15 +48,18 @@ p {
 .btn:hover {
   background: #F0D060;
 }
+.btn-secondary {
+  background: #6B4F0A;
+}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="icon">✓</div>
-  <h1>Pembayaran Berhasil!</h1>
-  <p id="message">Akun Premium Anda telah diaktifkan.</p>
+  <div class="icon" id="icon">✓</div>
+  <h1 id="title">Pembayaran Berhasil!</h1>
+  <p id="message">Akun Anda sedang diverifikasi. Mohon tunggu sebentar.</p>
   <div style="margin-bottom:20px;">
-    <a href="/tutorial.html" class="btn" style="background:#6B4F0A;margin-right:10px;">
+    <a href="/tutorial.html" class="btn btn-secondary" style="margin-right:10px;">
       📹 LIHAT TUTORIAL
     </a>
     <a href="/" class="btn">MULAI KALKULASI</a>
@@ -64,23 +67,44 @@ p {
 </div>
 
 <script>
-// Activate premium from URL params
+// Read status from URL params — set by server-side /api/subscription/activate
+// NO direct premium activation here — activation is server-side only via webhook
 const params = new URLSearchParams(window.location.search);
-const email = params.get('email');
+const status = params.get('status');
 const plan = params.get('plan');
+const verified = params.get('verified');
 
-if (email && plan) {
-  localStorage.setItem('ql-premium', 'true');
-  localStorage.setItem('ql-user-email', email);
-  localStorage.setItem('ql-user-plan', plan);
-  localStorage.setItem('ql-activated-at', Date.now());
-  
-  document.getElementById('message').textContent = 
-    `Akun Premium Anda (${plan.toUpperCase()}) telah diaktifkan.`;
+const icon = document.getElementById('icon');
+const title = document.getElementById('title');
+const message = document.getElementById('message');
+
+if (status === 'active' && verified === '1') {
+  // Server confirmed activation
+  icon.textContent = '✓';
+  title.textContent = 'Akun Premium Aktif!';
+  message.textContent = plan
+    ? `Paket ${plan.toUpperCase()} Anda telah diaktifkan. Selamat trading!`
+    : 'Akun Premium Anda telah diaktifkan. Selamat trading!';
+  // Auto redirect after 3s
+  setTimeout(() => window.location.href = '/', 3000);
+
+} else if (status === 'pending') {
+  // Payment received, waiting for webhook confirmation
+  icon.textContent = '⏳';
+  title.textContent = 'Pembayaran Diproses';
+  message.textContent = 'Pembayaran Anda sedang diverifikasi. Akun akan aktif dalam beberapa menit. Cek email Anda untuk konfirmasi.';
+
+} else if (status === 'error') {
+  icon.textContent = '⚠️';
+  title.textContent = 'Terjadi Kesalahan';
+  message.textContent = 'Terjadi masalah saat aktivasi. Hubungi kami dengan menyertakan bukti pembayaran Anda.';
+
+} else {
+  // Unknown status — show generic pending
+  icon.textContent = '⏳';
+  title.textContent = 'Pembayaran Diterima';
+  message.textContent = 'Akun Anda akan aktif setelah pembayaran dikonfirmasi. Biasanya dalam beberapa menit.';
 }
-
-// Auto redirect after 3s
-setTimeout(() => window.location.href = '/', 3000);
 </script>
 </body>
 </html>
