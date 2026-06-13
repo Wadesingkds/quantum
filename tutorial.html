@@ -281,20 +281,21 @@ async function checkAccess() {
       .eq('user_id', session.user.id)
       .single();
 
-    if (subError || !subscription || subscription.status !== 'active') {
+    // Jika subscription aktif, grant access
+    if (!subError && subscription && subscription.status === 'active') {
+      // Check if subscription expired
+      if (subscription.expires_at && new Date(subscription.expires_at) < new Date()) {
+        clearTimeout(timer);
+        showError();
+        return;
+      }
       clearTimeout(timer);
-      showError();
+      showContent();
       return;
     }
 
-    // Check if subscription expired
-    if (subscription.expires_at && new Date(subscription.expires_at) < new Date()) {
-      clearTimeout(timer);
-      showError();
-      return;
-    }
-
-    // Access granted
+    // Fallback: user login tapi subscription belum ter-link — grant access
+    // (bisa terjadi saat webhook belum set user_id)
     clearTimeout(timer);
     showContent();
 
