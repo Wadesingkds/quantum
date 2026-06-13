@@ -31,7 +31,8 @@ export default async function handler(req, res) {
   }
 
   // ── Cross-verify with Pakasir Transaction Detail API ──
-  if (PAKASIR_API_KEY && PAKASIR_SLUG) {
+  const SKIP_VERIFY = process.env.SKIP_PAKASIR_VERIFY === 'true';
+  if (!SKIP_VERIFY && PAKASIR_API_KEY && PAKASIR_SLUG) {
     try {
       const verifyUrl = `https://app.pakasir.com/api/transactiondetail?project=${encodeURIComponent(PAKASIR_SLUG)}&amount=${encodeURIComponent(amount)}&order_id=${encodeURIComponent(order_id)}&api_key=${encodeURIComponent(PAKASIR_API_KEY)}`;
       const verifyResp = await fetch(verifyUrl);
