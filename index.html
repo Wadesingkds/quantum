@@ -1089,7 +1089,13 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
 
 // Fallback: Force show if localStorage exists (for page refresh after payment)
 window.addEventListener('DOMContentLoaded', async () => {
-  // Update premium button on page load
+  // Check existing session on page load
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (session && session.user) {
+    currentUser = session.user;
+    localStorage.setItem('ql-user-email', currentUser.email);
+  }
+  await updateUserBadge();
   await updatePremiumButton();
 });
 
