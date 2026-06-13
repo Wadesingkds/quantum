@@ -1098,17 +1098,27 @@ supabaseClient.auth.onAuthStateChange(async (event, session) => {
   }
 });
 
-// Fallback: Force show if localStorage exists (for page refresh after payment)
-window.addEventListener('DOMContentLoaded', async () => {
-  // Check existing session on page load
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session && session.user) {
-    currentUser = session.user;
-    localStorage.setItem('ql-user-email', currentUser.email);
+// Init auth state — jalankan setelah semua CDN scripts selesai load
+async function initAuth() {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+      currentUser = session.user;
+      localStorage.setItem('ql-user-email', currentUser.email);
+    }
+    await updateUserBadge();
+    await updatePremiumButton();
+  } catch(e) {
+    console.warn('initAuth error:', e.message);
   }
-  await updateUserBadge();
-  await updatePremiumButton();
-});
+}
+
+// Jalankan saat window load (bukan DOMContentLoaded) supaya CDN sudah siap
+if (document.readyState === 'complete') {
+  initAuth();
+} else {
+  window.addEventListener('load', initAuth);
+}
 
 function showAuthModal() {
   document.getElementById('authModal').style.display = 'flex';
