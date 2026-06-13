@@ -627,7 +627,7 @@
   <button class="btn-premium" onclick="showPage('pageSub')" id="btnUpgrade">
     ✦ &nbsp;UPGRADE TO PREMIUM
   </button>
-  <a href="/tutorial.html" class="btn-premium" id="btnTutorial" style="display:none;text-decoration:none;background:#6B4F0A;text-align:center;">
+  <a href="/tutorial.html" class="btn-premium" id="btnTutorial" onclick="return handleTutorialClick(event)" style="display:inline-block;text-decoration:none;background:#6B4F0A;text-align:center;">
     TUTORIAL
   </a>
   <button class="btn-reset" onclick="handleLogout()" id="logoutBtn" style="display:none;">↗ &nbsp;LOGOUT</button>
@@ -803,12 +803,18 @@
 
   async function updatePremiumButton() {
     const btnUpgrade = document.getElementById('btnUpgrade');
-    const btnTutorial = document.getElementById('btnTutorial');
-    
     const premium = await isPremium();
-    
     if (btnUpgrade) btnUpgrade.style.display = premium ? 'none' : 'block';
-    if (btnTutorial) btnTutorial.style.display = premium ? 'inline-block' : 'none';
+  }
+
+  async function handleTutorialClick(e) {
+    const premium = await isPremium();
+    if (!premium) {
+      e.preventDefault();
+      showPage('pageSub');
+      return false;
+    }
+    return true;
   }
 
   // ── TOAST NOTIFICATION SYSTEM ──
