@@ -787,12 +787,23 @@
   // ── PREMIUM CHECK ──
   async function isPremium() {
     // Require authenticated Supabase session
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    const sessionPromise = supabaseClient.auth.getSession();
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+
+    let session;
+    try {
+      const { data } = await Promise.race([sessionPromise, timeoutPromise]);
+      session = data?.session;
+    } catch {
+      return false;
+    }
+
     if (!session) return false;
 
     try {
       const res = await fetch('/api/subscription/check', {
-        headers: { 'Authorization': `Bearer ${session.access_token}` }
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+        signal: AbortSignal.timeout(5000)
       });
       const data = await res.json();
       return data.premium || false;
