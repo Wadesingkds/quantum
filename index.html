@@ -921,15 +921,14 @@
   }
 
   async function calculate() {
-    // Check if logged in first
-    const email = localStorage.getItem('ql-user-email');
-    if (!email) {
-      // Show modal via direct DOM manipulation
+    // Check Supabase session directly (tidak rely pada localStorage)
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
       const modal = document.getElementById('authModal');
       if (modal) modal.style.display = 'flex';
       return;
     }
-    
+
     // Check premium status
     const premium = await isPremium();
     if (!premium) {
