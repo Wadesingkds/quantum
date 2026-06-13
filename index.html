@@ -783,6 +783,7 @@
 
   // Global variable for auth state
   let currentUser = null;
+  let currentAuthTab = 'login';
 
   // ── PREMIUM CHECK ──
   async function isPremium() {
@@ -1060,17 +1061,58 @@
 </script>
 
 <!-- Auth Modal -->
-<div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:var(--bg-card);padding:40px;border-radius:12px;max-width:400px;width:90%;">
-    <h2 style="color:var(--gold);margin:0 0 20px 0;font-size:24px;">Login / Sign Up</h2>
-    <input type="email" id="authEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:12px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);border-radius:6px;">
-    <input type="password" id="authPassword" placeholder="Password (min 6 karakter)" style="width:100%;padding:12px;margin-bottom:20px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);border-radius:6px;">
-    <button id="btnSignup" style="width:100%;padding:14px;background:var(--gold);color:#080A0D;border:none;border-radius:6px;font-weight:600;margin-bottom:10px;cursor:pointer;">SIGN UP</button>
-    <button id="btnLogin" style="width:100%;padding:14px;background:transparent;border:1px solid var(--gold);color:var(--gold);border-radius:6px;font-weight:600;cursor:pointer;">LOGIN</button>
-    <div style="margin:16px 0;text-align:center;color:var(--text-secondary);font-size:14px;">atau</div>
-    <button onclick="handleGoogleAuth()" style="width:100%;padding:14px;background:#fff;color:#333;border:1px solid #ddd;border-radius:6px;font-weight:600;cursor:pointer;">🔐 Login dengan Google</button>
-    <a href="#" onclick="handleResetPassword(); return false;" style="display:block;text-align:center;margin-top:12px;color:var(--text-secondary);font-size:14px;text-decoration:none;">Lupa password?</a>
-    <button onclick="closeAuthModal()" style="width:100%;padding:10px;margin-top:20px;background:transparent;border:none;color:var(--text-secondary);cursor:pointer;">TUTUP</button>
+<div id="authModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(4,6,8,0.92);backdrop-filter:blur(8px);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:linear-gradient(145deg,#0d1117,#0a0d12);border:1px solid rgba(212,175,55,0.2);border-radius:16px;max-width:420px;width:92%;box-shadow:0 24px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(212,175,55,0.05);overflow:hidden;">
+
+    <!-- Header -->
+    <div style="padding:32px 32px 0;text-align:center;">
+      <div style="font-family:'Cinzel',serif;font-size:22px;letter-spacing:4px;color:var(--gold);margin-bottom:4px;">QUANTUM LEAPS</div>
+      <div style="font-size:12px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;margin-bottom:28px;">Gann Square of 9</div>
+      <!-- Tab switcher -->
+      <div style="display:flex;background:rgba(255,255,255,0.04);border-radius:8px;padding:4px;margin-bottom:28px;">
+        <button id="tabLogin" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:2px;font-weight:600;cursor:pointer;transition:all 0.2s;background:var(--gold);color:#080A0D;">LOGIN</button>
+        <button id="tabSignup" onclick="switchAuthTab('signup')" style="flex:1;padding:10px;border:none;border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:2px;font-weight:600;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--text-dim);">SIGN UP</button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div style="padding:0 32px 32px;">
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:11px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;">EMAIL</label>
+        <input type="email" id="authEmail" placeholder="trader@email.com"
+          style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(212,175,55,0.2);color:var(--text-primary);border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:15px;box-sizing:border-box;outline:none;transition:border 0.2s;"
+          onfocus="this.style.borderColor='rgba(212,175,55,0.6)'" onblur="this.style.borderColor='rgba(212,175,55,0.2)'">
+      </div>
+      <div style="margin-bottom:24px;">
+        <label style="display:block;font-size:11px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;">PASSWORD</label>
+        <input type="password" id="authPassword" placeholder="Min 6 karakter"
+          style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(212,175,55,0.2);color:var(--text-primary);border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:15px;box-sizing:border-box;outline:none;transition:border 0.2s;"
+          onfocus="this.style.borderColor='rgba(212,175,55,0.6)'" onblur="this.style.borderColor='rgba(212,175,55,0.2)'">
+      </div>
+
+      <button id="btnAuthSubmit" onclick="handleAuth(currentAuthTab)"
+        style="width:100%;padding:15px;background:linear-gradient(135deg,#D4AF37,#F0D060);color:#080A0D;border:none;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-bottom:16px;"
+        onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">LOGIN</button>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="flex:1;height:1px;background:rgba(212,175,55,0.15);"></div>
+        <span style="font-size:12px;color:var(--text-dim);letter-spacing:1px;">atau</span>
+        <div style="flex:1;height:1px;background:rgba(212,175,55,0.15);"></div>
+      </div>
+
+      <button onclick="handleGoogleAuth()"
+        style="width:100%;padding:13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-primary);border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:2px;font-weight:600;cursor:pointer;transition:background 0.2s;margin-bottom:20px;"
+        onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">&#9711;&nbsp; LANJUTKAN DENGAN GOOGLE</button>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <a href="#" onclick="handleResetPassword(); return false;"
+          style="font-size:12px;color:var(--text-dim);text-decoration:none;letter-spacing:1px;"
+          onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text-dim)'">Lupa password?</a>
+        <button onclick="closeAuthModal()"
+          style="padding:8px 16px;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;"
+          onmouseover="this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">TUTUP</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1122,6 +1164,27 @@ if (document.readyState === 'complete') {
 
 function showAuthModal() {
   document.getElementById('authModal').style.display = 'flex';
+  switchAuthTab('login');
+}
+
+function switchAuthTab(tab) {
+  currentAuthTab = tab;
+  const tabLogin = document.getElementById('tabLogin');
+  const tabSignup = document.getElementById('tabSignup');
+  const btnSubmit = document.getElementById('btnAuthSubmit');
+  if (tab === 'login') {
+    tabLogin.style.background = 'var(--gold)';
+    tabLogin.style.color = '#080A0D';
+    tabSignup.style.background = 'transparent';
+    tabSignup.style.color = 'var(--text-dim)';
+    btnSubmit.textContent = 'LOGIN';
+  } else {
+    tabSignup.style.background = 'var(--gold)';
+    tabSignup.style.color = '#080A0D';
+    tabLogin.style.background = 'transparent';
+    tabLogin.style.color = 'var(--text-dim)';
+    btnSubmit.textContent = 'SIGN UP';
+  }
 }
 
 function closeAuthModal() {
