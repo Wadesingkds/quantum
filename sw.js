@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quantum-leaps-v1';
+const CACHE_NAME = 'quantum-leaps-v3';
 const urlsToCache = [
   '/',
   '/index.html',
