@@ -1250,7 +1250,11 @@ async function handleAuth(mode) {
   try {
     let result;
     if (mode === 'signup') {
-      result = await supabaseClient.auth.signUp({ email, password });
+      result = await supabaseClient.auth.signUp({ 
+        email, 
+        password,
+        options: { emailRedirectTo: window.location.origin }
+      });
     } else {
       result = await supabaseClient.auth.signInWithPassword({ email, password });
     }
