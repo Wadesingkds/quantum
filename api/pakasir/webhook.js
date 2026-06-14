@@ -117,6 +117,44 @@ export default async function handler(req, res) {
       );
       const data = await patchResp.json();
       console.log('[Pakasir Webhook] Activated for user_id:', sub.user_id, JSON.stringify(data));
+
+      // ── Append income row to Google Sheet via Apps Script Web App ──
+      const SHEETS_URL = process.env.SHEETS_WEBHOOK_URL;
+      if (SHEETS_URL) {
+        try {
+          const method = payload.payment_method || 'qris';
+          const adm = computeAdmFee(Number(amount), method);
+          const tarik = Number(amount) - adm;
+          const didik = Math.round(tarik * 0.4);
+          const muhib = Math.round(tarik * 0.4);
+          const quantum = tarik - didik - muhib; // remainder to Quantum (rounding safety)
+          const dateStr = (payload.completed_at
+            ? new Date(payload.completed_at)
+            : new Date()
+          ).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+
+          const sheetResp = await fetch(SHEETS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              date: dateStr,
+              order_id,
+              pakasir: Number(amount),
+              adm,
+              tarik,
+              didik,
+              muhib,
+              quantum
+            })
+            // No Content-Type header — Apps Script CORS rejects preflight
+          });
+          const sheetResult = await sheetResp.json().catch(() => ({}));
+          console.log('[Pakasir Webhook] Sheet append:', sheetResult.status || sheetResp.status);
+        } catch (e) {
+          console.error('[Pakasir Webhook] Sheet append error (non-fatal):', e.message);
+        }
+      } else {
+        console.warn('[Pakasir Webhook] SHEETS_WEBHOOK_URL not set — skipping sheet append');
+      }
     } catch (e) {
       console.error('[Pakasir Webhook] Supabase error:', e.message);
       return res.status(500).json({ error: 'Internal error' });
@@ -124,4 +162,17 @@ export default async function handler(req, res) {
   }
 
   return res.status(200).json({ received: true });
+}
+
+// ── Pakasir admin fee (per payment_method) ──
+function computeAdmFee(amount, method) {
+  if (method === 'qris') {
+    // QRIS > 105K: 1% of amount
+    if (amount > 105000) return Math.ceil(amount * 0.01);
+    return Math.ceil(amount * 0.007); // < 105K: 0.7%
+  }
+  // VA methods (bni_va, bri_va, cimb_va, etc): flat 2500
+  if (method && method.endsWith('_va')) return 2500;
+  // Fallback: 1%
+  return Math.ceil(amount * 0.01);
 }
