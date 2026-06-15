@@ -1,3 +1,10 @@
 .vercel
-.env.local
+.env
+.env.*
+!.env.example
 *.backup
+.backup-*/
+.env.prod
+.env.prod.pulled
+.env.vercel
+.env.local
