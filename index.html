@@ -1902,6 +1902,59 @@ function showAuthModal() {
   switchAuthTab('login');
 }
 
+// ============================================================================
+// UTM ATTRIBUTION
+// Capture UTM params on first visit, persist 30 days, attach to signup
+// ============================================================================
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+const UTM_STORAGE_KEY = 'ql_attribution';
+const UTM_TTL_DAYS = 30;
+
+function captureAttribution() {
+  try {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const captured = {};
+    let hasUtm = false;
+    UTM_KEYS.forEach(k => {
+      const v = params.get(k);
+      if (v) { captured[k] = v; hasUtm = true; }
+    });
+    // Only overwrite if new UTM present (don't lose first-touch attribution)
+    if (hasUtm) {
+      const data = {
+        ...captured,
+        referrer: document.referrer || null,
+        landing_page: window.location.pathname + window.location.search,
+        user_agent: navigator.userAgent.slice(0, 200),
+        captured_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + UTM_TTL_DAYS * 86400000).toISOString()
+      };
+      localStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(data));
+    }
+  } catch (e) {
+    console.warn('UTM capture failed:', e);
+  }
+}
+
+function getAttribution() {
+  try {
+    const raw = localStorage.getItem(UTM_STORAGE_KEY);
+    if (!raw) return {};
+    const data = JSON.parse(raw);
+    if (data.expires_at && new Date(data.expires_at) < new Date()) {
+      localStorage.removeItem(UTM_STORAGE_KEY);
+      return {};
+    }
+    // Strip expires_at, keep payload
+    const { expires_at, captured_at, ...payload } = data;
+    return payload;
+  } catch (e) { return {}; }
+}
+
+// Run capture immediately on script load
+captureAttribution();
+
 function switchAuthTab(tab) {
   currentAuthTab = tab;
   const tabLogin = document.getElementById('tabLogin');
@@ -1938,10 +1991,14 @@ async function handleAuth(mode) {
   try {
     let result;
     if (mode === 'signup') {
+      const attribution = getAttribution();
       result = await supabaseClient.auth.signUp({ 
         email, 
         password,
-        options: { emailRedirectTo: window.location.origin }
+        options: { 
+          emailRedirectTo: window.location.origin,
+          data: attribution
+        }
       });
     } else {
       result = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -2055,6 +2112,15 @@ function initGoogleGIS() {
           });
           if (error) throw error;
           currentUser = data.user;
+          // Attach UTM attribution if first signup (no existing metadata)
+          try {
+            const attribution = getAttribution();
+            const hasUtm = Object.keys(attribution).length > 0;
+            const meta = currentUser.user_metadata || {};
+            if (hasUtm && !meta.utm_source) {
+              await supabaseClient.auth.updateUser({ data: attribution });
+            }
+          } catch (e) { console.warn('Attribution attach failed:', e); }
           localStorage.setItem('ql-user-email', currentUser.email);
           closeAuthModal();
           showToast('Login berhasil', 'success', 'WELCOME');
