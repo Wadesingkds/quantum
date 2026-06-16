@@ -1817,6 +1817,11 @@
 </div>
 
 <script>
+// Google GIS variables — declared before everything else to avoid TDZ errors
+var GOOGLE_CLIENT_ID = '891836833664-0k6ijs6l9l6865crue33djtqasf706u8.apps.googleusercontent.com';
+var googleInitialized = false;
+var googleCallbackPending = false;
+
 // Supabase Auth Init
 const supabaseClient = window.supabase.createClient(
   'https://deqjvxsxovobpfisjyhg.supabase.co',
@@ -2098,10 +2103,6 @@ async function handleResetPassword() {
     showToast(err.message, 'error', 'RESET ERROR');
   }
 }
-
-const GOOGLE_CLIENT_ID = '891836833664-0k6ijs6l9l6865crue33djtqasf706u8.apps.googleusercontent.com';
-let googleInitialized = false;
-let googleCallbackPending = false;
 
 function initGoogleGIS() {
   if (googleInitialized || typeof google === 'undefined' || !google.accounts) return;
