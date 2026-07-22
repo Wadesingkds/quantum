@@ -2174,6 +2174,47 @@ if ('serviceWorker' in navigator) {
       .then(reg => console.log('✓ Service Worker registered:', reg.scope))
       .catch(err => console.error('✗ Service Worker registration failed:', err));
   });
+
+  // PWA Install Prompt
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallBanner();
+  });
+
+  function showInstallBanner() {
+    if (document.getElementById('pwa-install-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'pwa-install-banner';
+    banner.innerHTML = `
+      <div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1a1f2e;border-top:1px solid rgba(212,175,55,0.2);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;font-family:system-ui">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span style="color:#e8e8e8;font-size:14px">Install <b style="color:#D4AF37">QUANTUM</b> ke layar utama</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="this.closest('#pwa-install-banner').remove()" style="background:transparent;border:1px solid #555;color:#9ca3af;padding:6px 12px;border-radius:6px;font-size:13px;cursor:pointer">Nanti</button>
+          <button id="pwa-install-btn" style="background:#D4AF37;border:none;color:#0A0E1A;padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer">Install</button>
+        </div>
+      </div>`;
+    document.body.appendChild(banner);
+    document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('PWA install:', outcome);
+      deferredPrompt = null;
+      banner.remove();
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    const b = document.getElementById('pwa-install-banner');
+    if (b) b.remove();
+    deferredPrompt = null;
+    console.log('PWA installed');
+  });
 }
 </script>
 
