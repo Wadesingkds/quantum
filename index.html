@@ -94,7 +94,6 @@
     --modal-overlay: rgba(4,6,8,0.92);
     --nav-bg: rgba(8,10,13,0.85);
     --text-muted: #4A5568;
-    --toggle-icon: "☀️";
   }
 
   /* ── APP LOADER — slim loading bar ── */
@@ -113,7 +112,7 @@
   }
   .loader-bar-track::after {
     content: ''; display: block; width: 35%; height: 100%;
-    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-light));
+    background: var(--gold);
     border-radius: 4px;
     animation: loaderSlide 1s ease-in-out infinite;
   }
@@ -152,7 +151,6 @@
     --modal-overlay: rgba(240,237,230,0.92);
     --nav-bg: rgba(240,237,230,0.88);
     --text-muted: #A09888;
-    --toggle-icon: "🌙";
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -217,7 +215,7 @@
 
   .card-top-line {
     position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    background: var(--gold); opacity: 0.3;
     border-radius: 12px 12px 0 0;
   }
 
@@ -313,7 +311,7 @@
 
   .divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    background: var(--border);
     margin: 20px 0;
   }
 
@@ -349,7 +347,7 @@
   /* ── BUTTONS ── */
   .btn-calc {
     width: 100%; padding: 16px;
-    background: linear-gradient(135deg, #B8962E, var(--gold), #C9A227);
+    background: var(--gold);
     border: none; border-radius: 6px;
     font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700;
     letter-spacing: 4px; color: #0A0800; cursor: pointer;
@@ -590,9 +588,7 @@
   /* ── LANDING NAV ── */
   .page-landing nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    background: var(--nav-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: #0f1218;
     border-bottom: 1px solid var(--border);
   }
   .page-landing nav .container {
@@ -678,7 +674,7 @@
   }
 
   /* ── HERO ── */
-  .page-landing #hero { padding-top: 160px; padding-bottom: 80px; text-align: center; }
+  .page-landing #hero { padding-top: 120px; padding-bottom: 60px; max-height: 60vh; overflow: hidden; text-align: left; }
   .page-landing .hero-badge {
     display: inline-block; padding: 6px 16px;
     border: 1px solid var(--gold-dim); border-radius: 4px;
@@ -759,7 +755,7 @@
   }
   .page-landing .pricing-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    background: var(--gold); opacity: 0.3;
     border-radius: 10px 10px 0 0;
   }
   .page-landing .pricing-plan {
@@ -774,7 +770,7 @@
   .page-landing .pricing-note {
     font-size: 14px; color: var(--text-secondary); margin-bottom: 32px;
   }
-  .page-landing .pricing-features { list-style: none; padding: 0; text-align: left; margin-bottom: 36px; }
+  .page-landing .pricing-features { list-style: none; padding: 0; margin-bottom: 32px; }
   .page-landing .pricing-features li {
     padding: 10px 0; font-size: 15px; color: var(--text-primary);
     letter-spacing: 0.5px; display: flex; align-items: center;
@@ -782,7 +778,9 @@
   }
   .page-landing .pricing-features li:last-child { border-bottom: none; }
   .page-landing .pricing-features li::before {
-    content: '✦'; color: var(--gold); font-size: 12px; flex-shrink: 0;
+    content: ''; display: inline-block; width: 6px; height: 6px;
+    background: var(--gold); border-radius: 1px; flex-shrink: 0;
+    margin-right: 2px;
   }
   .page-landing .pricing-cta {
     display: inline-block; padding: 16px 48px;
@@ -827,7 +825,7 @@
     .page-landing .hero-title { font-size: 30px; letter-spacing: 2px; }
     .page-landing .hero-sub { font-size: 15px; }
     .page-landing section { padding: 70px 0; }
-    .page-landing #hero { padding-top: 130px; padding-bottom: 50px; }
+    .page-landing #hero { padding-top: 100px; padding-bottom: 40px; max-height: 60vh; }
     .page-landing .pricing-card { padding: 36px 24px; }
     .page-landing .pricing-price { font-size: 40px; }
     .page-landing .sec-title { font-size: 22px; }
@@ -902,7 +900,7 @@
 
   .popular-badge {
     position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-    background: linear-gradient(135deg, #B8962E, var(--gold));
+    background: var(--gold);
     color: #0A0800; font-size: 11px; font-weight: 700;
     letter-spacing: 3px; padding: 3px 14px; border-radius: 20px;
     white-space: nowrap;
@@ -928,7 +926,7 @@
 
   .btn-subscribe {
     width: 100%; padding: 14px; margin-top: 20px;
-    background: linear-gradient(135deg, #B8962E, var(--gold), #C9A227);
+    background: var(--gold);
     border: none; border-radius: 6px;
     font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700;
     letter-spacing: 4px; color: #0A0800; cursor: pointer;
@@ -1031,7 +1029,7 @@
   </div>
 
   <!-- Theme Toggle -->
-  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">☀️</button>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
 
   <!-- Header -->
   <div style="margin-bottom: 24px; padding-right: 40px;">
@@ -1093,7 +1091,7 @@
         <span style="margin-left:auto;font-size:11px;font-family:'Share Tech Mono',monospace;opacity:0.45;letter-spacing:1px;">OPTIONAL</span>
       </div>
       <input id="swingHigh" class="input-field" type="number" inputmode="decimal" step="any" placeholder="e.g. 2380.50" />
-      <div class="error-msg" id="errHigh">⚠ Enter a valid positive number</div>
+      <div class="error-msg" id="errHigh"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Enter a valid positive number</div>
     </div>
     <div>
       <div class="input-label low">
@@ -1101,7 +1099,7 @@
         <span style="margin-left:auto;font-size:11px;font-family:'Share Tech Mono',monospace;opacity:0.45;letter-spacing:1px;">OPTIONAL</span>
       </div>
       <input id="swingLow" class="input-field" type="number" inputmode="decimal" step="any" placeholder="e.g. 2340.00" />
-      <div class="error-msg" id="errLow">⚠ Enter a valid positive number</div>
+      <div class="error-msg" id="errLow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Enter a valid positive number</div>
     </div>
   </div>
 
@@ -1114,7 +1112,7 @@
   </button>
   <button class="btn-reset" onclick="reset()">↺ &nbsp;RESET</button>
   <button class="btn-premium" onclick="showPage('pageSub')" id="btnUpgrade">
-    ✦ &nbsp;UPGRADE TO PREMIUM
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> &nbsp;UPGRADE TO PREMIUM
   </button>
   <a href="/tutorial.html" class="btn-premium" id="btnTutorial" onclick="return handleTutorialClick(event)" style="display:inline-block;text-decoration:none;background:#6B4F0A;text-align:center;">
     TUTORIAL
@@ -1230,7 +1228,7 @@
 
   <!-- ONE-TIME OFFER -->
   <div class="plan-card popular">
-    <div class="popular-badge">✦ HARGA HARI INI</div>
+    <div class="popular-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> HARGA HARI INI</div>
     <div class="plan-top">
       <div>
         <div class="plan-name" style="color:var(--gold-light);">PREMIUM ACCESS</div>
@@ -1242,19 +1240,19 @@
       </div>
     </div>
     <ul class="plan-features">
-      <li><span class="check">✓</span> <strong>Multi-timeframe M1 & M5</strong></li>
-      <li><span class="check">✓</span> <strong>Confluence Detector</strong></li>
-      <li><span class="check">✓</span> Save History (localStorage)</li>
-      <li><span class="check">✓</span> Export PNG — share ke grup</li>
-      <li><span class="check">✓</span> Custom Offset (atur sendiri)</li>
-      <li><span class="check">✓</span> Priority support via WhatsApp</li>
-      <li><span class="check">✓</span> Semua update fitur selamanya</li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> <strong>Multi-timeframe M1 & M5</strong></li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> <strong>Confluence Detector</strong></li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Save History (localStorage)</li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Export PNG — share ke grup</li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Custom Offset (atur sendiri)</li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Priority support via WhatsApp</li>
+      <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Semua update fitur selamanya</li>
     </ul>
     <button class="btn-subscribe" id="btnSubscribe" onclick="handleSubscribe('lifetime')">
       BELI SEKARANG
     </button>
     <div class="premium-member-badge" id="premiumMemberBadge" style="display:none;">
-      <span class="pm-icon">✦</span> PREMIUM MEMBER
+      <span class="pm-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> PREMIUM MEMBER
     </div>
   </div>
 
@@ -1272,8 +1270,8 @@
   <div class="container">
     <div class="logo">QUANTUM <span>Leaps</span></div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <button id="landingThemeToggle" onclick="landingToggleTheme()" style="width:36px;height:36px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s;" title="Toggle theme">☀️</button>
-      <a href="#" class="nav-cta" onclick="landingHandleAccess(event)">✦ PREMIUM</a>
+      <button id="landingThemeToggle" onclick="landingToggleTheme()" style="width:36px;height:36px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s;" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      <a href="#" class="nav-cta" onclick="landingHandleAccess(event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> PREMIUM</a>
     </div>
   </div>
 </nav>
@@ -1289,7 +1287,7 @@
       Tools khusus XAUUSD untuk trader yang serius. Hitung level support &amp; resistance harian
       menggunakan rumus geometric geometry yang digunakan trader profesional sejak puluhan tahun.
     </p>
-    <a href="#" class="hero-cta" onclick="landingHandleAccess(event)">✦ GET PREMIUM ACCESS &mdash; Rp 1.000.000</a>
+    <a href="#" class="hero-cta" onclick="landingHandleAccess(event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> GET PREMIUM ACCESS &mdash; Rp 1 Juta</a>
     <p class="hero-note">Sekali bayar, akses seumur hidup. Tidak ada free tier.</p>
   </div>
 </section>
@@ -1384,8 +1382,8 @@
 <section>
   <div class="container">
     <div class="section-label">Lihat Cara Kerja</div>
-    <h2 class="sec-title" style="text-align:center;">Pahami kalkulator dalam 45 detik.</h2>
-    <p class="sec-sub" style="text-align:center;">Demo singkat fitur utama — tonton sebelum upgrade.</p>
+    <h2 class="sec-title">Pahami kalkulator dalam 45 detik.</h2>
+    <p class="sec-sub">Demo singkat fitur utama — tonton sebelum upgrade.</p>
 
     <div class="demo-video-wrapper">
       <iframe
@@ -1408,12 +1406,12 @@
 <section>
   <div class="container">
     <div class="section-label">Harga</div>
-    <h2 class="sec-title" style="text-align:center;">Satu harga. Akses penuh. Selamanya.</h2>
-    <p class="sec-sub" style="text-align:center;">Tidak ada tingkatan, tidak ada upsell, tidak ada biaya bulanan.</p>
+    <h2 class="sec-title">Satu harga. Akses penuh. Selamanya.</h2>
+    <p class="sec-sub">Tidak ada tingkatan, tidak ada upsell, tidak ada biaya bulanan.</p>
 
     <div class="pricing-card">
-      <div class="pricing-plan">Lifetime</div>
-      <div class="pricing-price">Rp 1.000.000</div>
+      <div class="pricing-plan">LIFETIME ACCESS</div>
+      <div class="pricing-price">Rp 1 Juta</div>
       <p class="pricing-note">Sekali bayar, akses seumur hidup</p>
 
       <ul class="pricing-features">
@@ -1424,7 +1422,7 @@
         <li>Tidak ada biaya bulanan</li>
       </ul>
 
-      <a href="#" class="pricing-cta" onclick="landingHandleAccess(event)">✦ GET PREMIUM ACCESS</a>
+      <a href="#" class="pricing-cta" onclick="landingHandleAccess(event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> GET PREMIUM ACCESS</a>
       <p class="pricing-payment">Pembayaran via QRIS — GoPay, OVO, Dana, Mobile Banking</p>
     </div>
   </div>
@@ -1438,35 +1436,35 @@
     <div class="section-label">FAQ</div>
     <h2 class="sec-title">Pertanyaan yang sering diajukan.</h2>
 
-    <div class="faq-item">
-      <div class="faq-q">Ada versi gratis?</div>
+    <details class="faq-item">
+      <summary class="faq-q">Ada versi gratis?</summary>
       <div class="faq-a">Tidak. QUANTUM Leaps adalah tools premium untuk trader yang serius. Tidak ada trial, tidak ada free tier — langsung full akses. Kami percaya kalau tools ini berguna, pengguna tidak perlu trial untuk membuktikannya.</div>
-    </div>
+    </details>
 
-    <div class="faq-item">
-      <div class="faq-q">Kalau tidak puas?</div>
+    <details class="faq-item">
+      <summary class="faq-q">Kalau tidak puas?</summary>
       <div class="faq-a">Silakan hubungi kami. Setiap pembelian dievaluasi kasus per kasus. Keputusan refund sepenuhnya di kebijakan kami — tapi kami selalu berusaha yang terbaik untuk pengguna.</div>
-    </div>
+    </details>
 
-    <div class="faq-item">
-      <div class="faq-q">Apakah hasil selalu akurat?</div>
+    <details class="faq-item">
+      <summary class="faq-q">Apakah hasil selalu akurat?</summary>
       <div class="faq-a">Gann Square of 9 adalah metode matematis yang sudah digunakan trader profesional sejak puluhan tahun. Hasilnya berupa proyeksi level — gunakan sebagai referensi entry, bukan jaminan profit. Trading tetap butuh analisis Anda sendiri.</div>
-    </div>
+    </details>
 
-    <div class="faq-item">
-      <div class="faq-q">Bayar pakai apa?</div>
+    <details class="faq-item">
+      <summary class="faq-q">Bayar pakai apa?</summary>
       <div class="faq-a">QRIS — bisa pakai GoPay, OVO, Dana, atau Mobile Banking. Proses instan, akun aktif otomatis begitu pembayaran terverifikasi oleh sistem.</div>
-    </div>
+    </details>
 
-    <div class="faq-item">
-      <div class="faq-q">Lifetime itu benar-benar selamanya?</div>
+    <details class="faq-item">
+      <summary class="faq-q">Lifetime itu benar-benar selamanya?</summary>
       <div class="faq-a">Ya. Sekali bayar Rp 1.000.000 — akses tidak terbatas, termasuk update fitur di masa depan. Tidak ada perpanjangan, tidak ada subscription.</div>
-    </div>
+    </details>
 
-    <div class="faq-item">
-      <div class="faq-q">Gimana cara daftar dan mulai?</div>
+    <details class="faq-item">
+      <summary class="faq-q">Gimana cara daftar dan mulai?</summary>
       <div class="faq-a">Klik tombol "Get Premium Access" di atas → login dengan Google → bayar QRIS → langsung bisa pakai calculator. Total waktu: kurang dari 2 menit.</div>
-    </div>
+    </details>
   </div>
 </section>
 
@@ -1503,7 +1501,7 @@
 
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+    document.getElementById('themeToggle').innerHTML = theme === 'dark' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
     currentTheme = theme;
     localStorage.setItem('ql-theme', theme);
     syncLandingThemeIcon();
@@ -1537,14 +1535,14 @@
     toggleTheme();
     // Sync landing toggle button icon
     const landBtn = document.getElementById('landingThemeToggle');
-    if (landBtn) landBtn.textContent = document.getElementById('themeToggle').textContent;
+    if (landBtn) landBtn.innerHTML = document.getElementById('themeToggle').innerHTML;
   }
 
   // Sync landing theme toggle icon on theme change
   function syncLandingThemeIcon() {
     const landBtn = document.getElementById('landingThemeToggle');
     const mainBtn = document.getElementById('themeToggle');
-    if (landBtn && mainBtn) landBtn.textContent = mainBtn.textContent;
+    if (landBtn && mainBtn) landBtn.innerHTML = mainBtn.innerHTML;
   }
 
   // ── LANDING CTA — triggers auth → premium flow ──
@@ -1571,14 +1569,14 @@
     if (session) {
       const premium = await isPremium();
       if (premium) {
-        navCta.textContent = '✦ KALKULATOR';
+        navCta.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> KALKULATOR';
         navCta.onclick = function(e) { e.preventDefault(); showPage('pageCalc'); };
       } else {
-        navCta.textContent = '✦ UPGRADE';
+        navCta.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> UPGRADE';
         navCta.onclick = landingHandleAccess;
       }
     } else {
-      navCta.textContent = '✦ PREMIUM';
+      navCta.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> PREMIUM';
       navCta.onclick = landingHandleAccess;
     }
   }
@@ -1641,10 +1639,10 @@
     if (!container) return;
 
     const icons = {
-      success: '✓',
-      error: '✗',
-      warning: '⚠',
-      info: 'ℹ'
+      success: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      error: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+      warning: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      info: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
     };
 
     const titles = {
@@ -1789,7 +1787,7 @@
       </div>
 
       <button id="btnAuthSubmit" onclick="handleAuth(currentAuthTab)"
-        style="width:100%;padding:17px;background:linear-gradient(135deg,#D4AF37,#F0D060);color:#080A0D;border:none;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:16px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-bottom:16px;"
+        style="width:100%;padding:17px;background:var(--gold);color:#080A0D;border:none;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:16px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-bottom:16px;"
         onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">LOGIN</button>
 
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
