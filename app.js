@@ -4,7 +4,7 @@
  */
 (function () {
   const API_BASE = 'https://quantum-api.quantumleaps.biz.id';
-  const COT_API = 'https://quantumleaps.biz.id/api/cot';
+  const COT_API = '/api/cot/proxy';
   let currentTF = 'M15';
   let livePriceData = null;
   let candleData = [];
