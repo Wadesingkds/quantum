@@ -5,7 +5,7 @@
 // amount is ALWAYS determined server-side — never trust client
 
 const PLAN_PRICES = {
-  lifetime: 500000
+  lifetime: 1000000
 };
 
 export default async function handler(req, res) {

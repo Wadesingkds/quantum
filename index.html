@@ -425,6 +425,57 @@
   .badge-sell { background: rgba(239,68,68,0.15); color: var(--sell-color); }
   .result-value { font-family: 'Share Tech Mono', monospace; font-size: 22px; color: var(--text-primary); }
 
+  /* ── SMC BADGES ── */
+  .smc-badge {
+    display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 1px;
+    padding: 2px 6px; border-radius: 3px; background: rgba(212,175,55,0.1);
+    color: var(--gold); border: 1px solid rgba(212,175,55,0.15);
+    margin-left: 4px; vertical-align: middle;
+  }
+
+  /* ── TIMEFRAME SELECTOR ── */
+  .tf-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+  .tf-btn {
+    flex: 1; padding: 8px; border: 1px solid var(--border); border-radius: 6px;
+    background: transparent; color: var(--text-dim); font-family: 'Share Tech Mono', monospace;
+    font-size: 13px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s;
+  }
+  .tf-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+  .tf-btn.active { background: var(--gold); color: #080A0D; border-color: var(--gold); font-weight: 700; }
+
+  /* ── LIVE PRICE ── */
+  .live-price-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; margin-bottom: 16px; border-radius: 8px;
+    background: rgba(212,175,55,0.04); border: 1px solid rgba(212,175,55,0.1);
+  }
+  .live-price-symbol { font-size: 13px; font-weight: 700; letter-spacing: 3px; color: var(--gold); }
+  .live-price-value { font-family: 'Share Tech Mono', monospace; font-size: 20px; color: var(--text-primary); }
+  .live-price-change { font-family: 'Share Tech Mono', monospace; font-size: 13px; margin-left: 8px; }
+
+  /* ── DATA LOADER ── */
+  .data-loader {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(8,10,13,0.7); backdrop-filter: blur(4px);
+    z-index: 500; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  }
+  .data-loader .spinner {
+    width: 36px; height: 36px; border: 3px solid rgba(212,175,55,0.15);
+    border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .data-loader .loader-text { font-size: 13px; letter-spacing: 2px; color: var(--gold-dim); }
+
+  /* ── COT PANEL ── */
+  .cot-panel {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    padding: 12px; margin-top: 12px; border-radius: 8px;
+    background: rgba(212,175,55,0.03); border: 1px solid rgba(212,175,55,0.08);
+  }
+  .cot-item { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 80px; }
+  .cot-label { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); font-weight: 600; }
+  .cot-value { font-family: 'Share Tech Mono', monospace; font-size: 14px; color: var(--text-primary); }
+
   .footer-note {
     font-family: 'Share Tech Mono', monospace; font-size: 12px;
     color: var(--text-secondary); text-align: center;
@@ -930,6 +981,9 @@
   }
 </style>
 <script src="/supabase.min.js"></script>
+<script src="/smc.js"></script>
+<script src="/confluence.js"></script>
+<script src="/app.js"></script>
 </head>
 <body class="landing-mode">
 
@@ -992,6 +1046,45 @@
 
   <div class="divider"></div>
 
+  <!-- Live Price -->
+  <div class="live-price-bar">
+    <span class="live-price-symbol">XAUUSD</span>
+    <div>
+      <span class="live-price-value" id="livePriceValue">—</span>
+      <span class="live-price-change" id="livePriceChange"></span>
+    </div>
+  </div>
+
+  <!-- Countdown + Nearest Signals -->
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; margin-bottom:6px; background:rgba(255,255,255,0.02); border-radius:8px; font-size:12px; font-family:'Share Tech Mono',monospace;">
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <span style="opacity:0.4;font-size:10px;letter-spacing:1px;">NEAREST BUY</span>
+      <span id="nearestBuy" style="color:#22c55e;">—</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <span style="opacity:0.4;font-size:10px;letter-spacing:1px;">CANDLE CLOSES IN</span>
+      <span id="countdownValue" style="color:var(--gold);font-size:16px;">—</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+      <span style="opacity:0.4;font-size:10px;letter-spacing:1px;">NEAREST SELL</span>
+      <span id="nearestSell" style="color:#ef4444;">—</span>
+    </div>
+  </div>
+
+  <!-- Timeframe Selector -->
+  <div class="tf-bar">
+    <button class="tf-btn" data-tf="M15" onclick="selectTF('M15')">M15</button>
+    <button class="tf-btn" data-tf="H1" onclick="selectTF('H1')">H1</button>
+    <button class="tf-btn active" data-tf="H4" onclick="selectTF('H4')">H4</button>
+    <button class="tf-btn" data-tf="D1" onclick="selectTF('D1')">D1</button>
+  </div>
+
+  <!-- Data Loader -->
+  <div class="data-loader" id="dataLoader">
+    <div class="spinner"></div>
+    <div class="loader-text">Menganalisis data...</div>
+  </div>
+
   <!-- Inputs -->
   <div style="display:flex; flex-direction:column; gap:18px; margin-bottom:20px;">
     <div>
@@ -1044,6 +1137,7 @@
         <span class="result-name buy">BUY1</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="result-value" id="val-buy1">—</span>
+          <span class="badge-area" id="badge-buy1"></span>
           <button class="btn-copy-single" onclick="copySingle('val-buy1','BUY1')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
@@ -1053,6 +1147,7 @@
         <span class="result-name buy">BUY2</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="result-value" id="val-buy2">—</span>
+          <span class="badge-area" id="badge-buy2"></span>
           <button class="btn-copy-single" onclick="copySingle('val-buy2','BUY2')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
@@ -1062,6 +1157,7 @@
         <span class="result-name buy">BUY3</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="result-value" id="val-buy3">—</span>
+          <span class="badge-area" id="badge-buy3"></span>
           <button class="btn-copy-single" onclick="copySingle('val-buy3','BUY3')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
@@ -1074,6 +1170,7 @@
         <span class="result-name sell">SELL1</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="result-value" id="val-sell1">—</span>
+          <span class="badge-area" id="badge-sell1"></span>
           <button class="btn-copy-single" onclick="copySingle('val-sell1','SELL1')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
@@ -1083,6 +1180,7 @@
         <span class="result-name sell">SELL2</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="result-value" id="val-sell2">—</span>
+          <span class="badge-area" id="badge-sell2"></span>
           <button class="btn-copy-single" onclick="copySingle('val-sell2','SELL2')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
@@ -1092,12 +1190,20 @@
         <span class="result-name sell">SELL3</span>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="result-value" id="val-sell3">—</span>
+          <span class="badge-area" id="badge-sell3"></span>
           <button class="btn-copy-single" onclick="copySingle('val-sell3','SELL3')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- COT Panel -->
+  <div class="cot-panel" id="cotPanel">
+    <div class="cot-item"><span class="cot-label">NET POS</span><span class="cot-value">—</span></div>
+    <div class="cot-item"><span class="cot-label">Z-SCORE</span><span class="cot-value">—</span></div>
+    <div class="cot-item"><span class="cot-label">BIAS</span><span class="cot-value">—</span></div>
   </div>
 
   <div class="footer-note">GANN SQUARE ROOT METHOD<br><span style="display:inline-block;margin-top:6px;">— NOT FINANCIAL ADVICE —</span></div>
@@ -1632,71 +1738,6 @@
     el.classList.remove('error'); errEl.style.display = 'none'; return true;
   }
 
-  async function calculate() {
-    // Check Supabase session directly (tidak rely pada localStorage)
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      const modal = document.getElementById('authModal');
-      if (modal) modal.style.display = 'flex';
-      return;
-    }
-
-    // Check premium status
-    const premium = await isPremium();
-    if (!premium) {
-      showToast('Upgrade ke Premium untuk akses penuh', 'warning', 'PREMIUM REQUIRED');
-      showPage('pageSub');
-      return;
-    }
-    
-    const highEl  = document.getElementById('swingHigh');
-    const lowEl   = document.getElementById('swingLow');
-    const errHigh = document.getElementById('errHigh');
-    const errLow  = document.getElementById('errLow');
-    const btn     = document.getElementById('btnCalc');
-    const results = document.getElementById('results');
-
-    if (!isValidInput(highEl, errHigh) || !isValidInput(lowEl, errLow)) return;
-
-    const hasHigh = highEl.value.trim() !== '';
-    const hasLow  = lowEl.value.trim() !== '';
-
-    if (!hasHigh && !hasLow) {
-      [highEl, lowEl].forEach(el => el.classList.add('error'));
-      errHigh.textContent = errLow.textContent = '⚠ Fill at least one field';
-      errHigh.style.display = errLow.style.display = 'block';
-      return;
-    }
-
-    errHigh.textContent = errLow.textContent = '⚠ Enter a valid positive number';
-    btn.classList.add('loading'); btn.disabled = true;
-    results.classList.remove('show');
-
-    setTimeout(() => {
-      const buyGroup  = document.getElementById('buyGroup');
-      const sellGroup = document.getElementById('sellGroup');
-
-      if (hasHigh) {
-        const high = parseFloat(highEl.value);
-        document.getElementById('val-buy1').textContent = Math.pow(Math.sqrt(high) - 0.125, 2).toFixed(2);
-        document.getElementById('val-buy2').textContent = Math.pow(Math.sqrt(high) - 0.175, 2).toFixed(2);
-        document.getElementById('val-buy3').textContent = Math.pow(Math.sqrt(high) - 0.250, 2).toFixed(2);
-        buyGroup.style.display = 'block';
-      } else { buyGroup.style.display = 'none'; }
-
-      if (hasLow) {
-        const low = parseFloat(lowEl.value);
-        document.getElementById('val-sell1').textContent = Math.pow(Math.sqrt(low) + 0.125, 2).toFixed(2);
-        document.getElementById('val-sell2').textContent = Math.pow(Math.sqrt(low) + 0.175, 2).toFixed(2);
-        document.getElementById('val-sell3').textContent = Math.pow(Math.sqrt(low) + 0.250, 2).toFixed(2);
-        sellGroup.style.display = 'block';
-      } else { sellGroup.style.display = 'none'; }
-
-      btn.classList.remove('loading'); btn.disabled = false;
-      results.classList.add('show');
-    }, 600);
-  }
-
   function reset() {
     ['swingHigh','swingLow'].forEach(id => {
       const el = document.getElementById(id);
@@ -1710,54 +1751,11 @@
     ['val-buy1','val-buy2','val-sell1','val-sell2'].forEach(id => {
       document.getElementById(id).textContent = '—';
     });
+    document.querySelectorAll('.badge-area').forEach(el => el.innerHTML = '');
+    const cotPanel = document.getElementById('cotPanel');
+    if (cotPanel) cotPanel.innerHTML = '<div class="cot-item"><span class="cot-label">NET POS</span><span class="cot-value">—</span></div><div class="cot-item"><span class="cot-label">Z-SCORE</span><span class="cot-value">—</span></div><div class="cot-item"><span class="cot-label">BIAS</span><span class="cot-value">—</span></div>';
   }
 
-  function copyResults() {
-    const high = document.getElementById('swingHigh').value;
-    const low  = document.getElementById('swingLow').value;
-    const b1 = document.getElementById('val-buy1').textContent;
-    const b2 = document.getElementById('val-buy2').textContent;
-    const b3 = document.getElementById('val-buy3').textContent;
-    const s1 = document.getElementById('val-sell1').textContent;
-    const s2 = document.getElementById('val-sell2').textContent;
-    const s3 = document.getElementById('val-sell3').textContent;
-
-    let lines = ['QUANTUM Leaps — Gann Square of 9','XAUUSD Price Projection','───────────────────────'];
-    if (high) lines.push(`Swing High : ${high}`);
-    if (low)  lines.push(`Swing Low  : ${low}`);
-    lines.push('');
-    if (high) { lines.push('BUY LEVELS'); lines.push(`BUY1  : ${b1}`); lines.push(`BUY2  : ${b2}`); lines.push(`BUY3  : ${b3}`); lines.push(''); }
-    if (low)  { lines.push('SELL LEVELS'); lines.push(`SELL1 : ${s1}`); lines.push(`SELL2 : ${s2}`); lines.push(`SELL3 : ${s3}`); lines.push(''); }
-    lines.push('───────────────────────');
-
-    navigator.clipboard.writeText(lines.join('\n')).then(() => {
-      const btn = document.getElementById('btnCopy');
-      btn.classList.add('copied');
-      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> COPIED`;
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> COPY`;
-      }, 2000);
-    });
-  }
-
-  function copySingle(valId, label) {
-    const val = document.getElementById(valId).textContent;
-    if (val === '—') return;
-    navigator.clipboard.writeText(val).then(() => {
-      const btns = document.querySelectorAll('.btn-copy-single');
-      // find the button next to this value
-      const valEl = document.getElementById(valId);
-      const btn = valEl.parentElement.querySelector('.btn-copy-single');
-      if (!btn) return;
-      btn.classList.add('copied');
-      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
-      }, 1500);
-    });
-  }
 </script>
 
 <!-- Auth Modal -->
