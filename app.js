@@ -57,7 +57,8 @@
   // Fetch candles for current timeframe
   async function fetchCandles() {
     try {
-      const r = await fetch(API_BASE + '/candles?tf=' + currentTF + '&limit=500');
+      const apiTF = TF_API_MAP[currentTF] || currentTF.toLowerCase();
+      const r = await fetch(API_BASE + '/candles?tf=' + apiTF + '&limit=500');
       if (!r.ok) throw new Error('Candles fetch failed');
       const data = await r.json();
       candleData = (data.candles || data).map(c => ({
@@ -276,6 +277,7 @@
 
   // ── Countdown Timer: next candle close per TF ──
   const TF_MINUTES = { M1: 1, M5: 5, M15: 15, M30: 30 };
+  const TF_API_MAP = { M1: '1m', M5: '5m', M15: '15m', M30: '30m' };
   let countdownInterval = null;
   let autoRefreshTimeout = null;
 
