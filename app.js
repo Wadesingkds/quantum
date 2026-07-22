@@ -5,7 +5,7 @@
 (function () {
   const API_BASE = 'https://quantum-api.quantumleaps.biz.id';
   const COT_API = 'https://quantumleaps.biz.id/api/cot';
-  let currentTF = 'H4';
+  let currentTF = 'M15';
   let livePriceData = null;
   let candleData = [];
   let smcSignals = [];
@@ -265,7 +265,7 @@
   };
 
   // ── Countdown Timer: next candle close per TF ──
-  const TF_MINUTES = { M15: 15, H1: 60, H4: 240, D1: 1440 };
+  const TF_MINUTES = { M1: 1, M5: 5, M15: 15, M30: 30 };
   let countdownInterval = null;
   let autoRefreshTimeout = null;
 
