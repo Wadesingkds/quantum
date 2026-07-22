@@ -83,8 +83,18 @@
     try {
       const r = await fetch(COT_API);
       if (!r.ok) throw new Error('COT fetch failed');
-      const data = await r.json();
-      updateCOTDisplay(data);
+      const json = await r.json();
+      // API returns { categories: { metals: [{symbol:'GC', display:'Gold', net, zScore, level, signal}] } }
+      const metals = json.categories?.metals || [];
+      const gold = metals.find(m => m.symbol === 'GC') || metals[0] || null;
+      if (!gold) throw new Error('No gold COT data');
+      updateCOTDisplay({
+        net_position: gold.net,
+        z_score: gold.zScore,
+        bias: gold.level || gold.signal,
+        change: gold.weekChange,
+        asOf: gold.asOf
+      });
     } catch (e) {
       console.warn('COT fetch error:', e);
       const panel = document.getElementById('cotPanel');
