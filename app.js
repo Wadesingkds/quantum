@@ -10,18 +10,11 @@
   let candleData = [];
   let smcSignals = [];
 
-  // Numeric confluence renderer — counts per type + nearest distance, no emoji
-  function renderBadges(badges) {
+  // Numeric confluence renderer — single 0-100 score
+  function renderBadges(badges, score) {
+    if (typeof score === 'number') return `<span class="smc-badge">${score}</span>`;
     if (!badges || !badges.length) return '';
-    const counts = {};
-    let nearest = Infinity;
-    for (const b of badges) {
-      counts[b.label] = (counts[b.label] || 0) + 1;
-      if (b.distance < nearest) nearest = b.distance;
-    }
-    const parts = Object.entries(counts).map(([k, v]) => `${k} ${v}`);
-    parts.push(`(${(nearest * 100).toFixed(2)}%)`);
-    return `<span class="smc-badge">${parts.join(' · ')}</span>`;
+    return `<span class="smc-badge">0</span>`;
   }
 
   // Show/hide loader
@@ -217,7 +210,7 @@
     const valEl = document.getElementById('val-' + id);
     const badgeEl = document.getElementById('badge-' + id);
     if (valEl) valEl.textContent = price ? price.toFixed(2) : '—';
-    if (badgeEl) badgeEl.innerHTML = merged ? renderBadges(merged.badges) : '';
+    if (badgeEl) badgeEl.innerHTML = merged ? renderBadges(merged.badges, merged.score) : '';
   }
 
   // Updated copyResults to include badges
