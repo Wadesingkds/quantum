@@ -44,9 +44,10 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Invalid user', premium: false });
     }
 
-    // Query subscription by user_id (server-side with service key)
+    // Query profile by user id (server-side with service key)
+    // unybsvt schema: profiles(id, email, is_pro, tier, pro_activated_at)
     const subResp = await fetch(
-      `${SUPABASE_URL}/rest/v1/subscriptions?user_id=eq.${userId}&select=plan,status,expires_at`,
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=is_pro,tier,pro_activated_at`,
       {
         headers: {
           'apikey': SUPABASE_SERVICE_KEY,
@@ -57,20 +58,18 @@ export default async function handler(req, res) {
 
     const data = await subResp.json();
 
-    if (!data || data.length === 0) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
       return res.status(200).json({ premium: false });
     }
 
     const sub = data[0];
-    const now = new Date();
-    const expiresAt = sub.expires_at ? new Date(sub.expires_at) : null;
-    const isPremium = sub.status === 'active' && (!expiresAt || expiresAt > now);
+    const isPremium = sub.is_pro === true;
 
     return res.status(200).json({
       premium: isPremium,
-      plan: sub.plan,
-      status: sub.status,
-      expires_at: sub.expires_at
+      plan: sub.tier || (isPremium ? 'pro' : 'free'),
+      status: isPremium ? 'active' : 'inactive',
+      expires_at: sub.pro_activated_at || null
     });
 
   } catch (err) {
