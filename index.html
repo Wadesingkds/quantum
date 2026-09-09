@@ -997,7 +997,7 @@
   // If no session: hide loader immediately = guest sees landing instantly
   // If session exists: loader stays visible until initAuth finishes
   (function() {
-    var sbKey = 'sb-deqjvxsxovobpfisjyhg-auth-token';
+    var sbKey = 'sb-unybsvtbjeukzqazpzjn-auth-token';
     if (!localStorage.getItem(sbKey)) {
       var loader = document.getElementById('appLoader');
       if (loader) {
@@ -1820,8 +1820,8 @@ var googleCallbackPending = false;
 
 // Supabase Auth Init
 const supabaseClient = window.supabase.createClient(
-  'https://deqjvxsxovobpfisjyhg.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlcWp2eHN4b3ZvYnBmaXNqeWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MDI5MjIsImV4cCI6MjA5NjE3ODkyMn0.qF8HJhGrBhO5H1FcLE0OryA3_P57N6pbv4Bn_SCps1I'
+  'https://unybsvtbjeukzqazpzjn.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVueWJzdnRiamV1a3pxYXpwempuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMjkzMzgsImV4cCI6MjA5NzYwNTMzOH0.qEwg1mjC7pzHlQkKt9Wyc9xNNf563kAMlLBu26jDUyU'
 );
 
 // Forward declaration to avoid hoisting issues
