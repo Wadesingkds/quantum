@@ -29,19 +29,18 @@ window.Confluence = (function () {
     return badges;
   }
 
-  // Confluence score 0-100: weighted zone count (max 60) + proximity bonus (max 40)
+  // Confluence score 0-100: fresh zones only (last 100 bars), top-5 nearest, type weight × proximity
   const TYPE_W = { BOS: 25, CHoCH: 20, OB: 15, FVG: 10 };
+  const FRESH_BARS = 100;
   function scoreLevel(price, signals) {
-    const badges = getBadges(price, signals);
+    let maxIdx = 0;
+    for (const s of signals) if (s.index > maxIdx) maxIdx = s.index;
+    const fresh = signals.filter(s => s.index >= maxIdx - FRESH_BARS);
+    const badges = getBadges(price, fresh);
+    const top = badges.sort((a, b) => a.distance - b.distance).slice(0, 5);
     let pts = 0;
-    let nearest = Infinity;
-    for (const b of badges) {
-      pts += TYPE_W[b.label] || 5;
-      if (b.distance < nearest) nearest = b.distance;
-    }
-    pts = Math.min(pts, 60);
-    if (nearest !== Infinity) pts += 40 * Math.max(0, 1 - nearest / THRESHOLD);
-    return { price: price, badges: badges, score: Math.round(Math.min(100, pts)) };
+    for (const b of top) pts += (TYPE_W[b.label] || 5) * (1 - b.distance / THRESHOLD);
+    return { price: price, badges: badges, score: Math.round(Math.min(100, (100 * pts) / 125)) };
   }
 
   function mergeLevels(levels, signals) {
