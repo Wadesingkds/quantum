@@ -10,11 +10,11 @@
   let candleData = [];
   let smcSignals = [];
 
-  // Numeric confluence renderer — single 0-100 score
+  // Numeric confluence renderer — "SMC 80" score format
   function renderBadges(badges, score) {
-    if (typeof score === 'number') return `<span class="smc-badge">${score}</span>`;
+    if (typeof score === 'number') return `<span class="smc-badge">SMC ${score}</span>`;
     if (!badges || !badges.length) return '';
-    return `<span class="smc-badge">0</span>`;
+    return `<span class="smc-badge">SMC 0</span>`;
   }
 
   // Show/hide loader
