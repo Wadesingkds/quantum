@@ -60,7 +60,8 @@
       const r = await fetch(API_BASE + '/candles?tf=' + apiTF + '&limit=500');
       if (!r.ok) throw new Error('Candles fetch failed');
       const data = await r.json();
-      candleData = (data.candles || data).map(c => ({
+      const arr = [data.data, data.candles, data].find(a => Array.isArray(a)) || [];
+      candleData = arr.map(c => ({
         open: c.open || c[1],
         high: c.high || c[2],
         low: c.low || c[3],
