@@ -10,12 +10,18 @@
   let candleData = [];
   let smcSignals = [];
 
-  // Badge HTML renderer
+  // Numeric confluence renderer — counts per type + nearest distance, no emoji
   function renderBadges(badges) {
     if (!badges || !badges.length) return '';
-    return badges.map(b =>
-      `<span class="smc-badge" title="${b.label} (${b.direction})">${b.emoji} ${b.label}</span>`
-    ).join(' ');
+    const counts = {};
+    let nearest = Infinity;
+    for (const b of badges) {
+      counts[b.label] = (counts[b.label] || 0) + 1;
+      if (b.distance < nearest) nearest = b.distance;
+    }
+    const parts = Object.entries(counts).map(([k, v]) => `${k} ${v}`);
+    parts.push(`(${(nearest * 100).toFixed(2)}%)`);
+    return `<span class="smc-badge">${parts.join(' · ')}</span>`;
   }
 
   // Show/hide loader
