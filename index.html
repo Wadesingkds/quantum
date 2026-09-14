@@ -1703,9 +1703,9 @@
       showAuthModal();
       return;
     }
-    // ── PAID PLANS: route through Pakasir ──
+    // ── PAID PLANS: route through SumoPod ──
     try {
-      const res = await fetch('/api/pakasir/checkout', {
+      const res = await fetch('/api/sumopod/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
