@@ -54,6 +54,18 @@ export default async function handler(req, res) {
     const svixOk = verifySvixSignature(rawBody, req.headers);
     const tokenOk = !svixOk && verifyWebhookToken(req.headers);
     if (!svixOk && !tokenOk) {
+      // DEBUG sementara: intip skema signing SumoPod dari test webhook
+      console.log(
+        "[SumoPod Webhook] DEBUG headers:",
+        JSON.stringify(
+          Object.fromEntries(
+            Object.entries(req.headers).filter(([k]) =>
+              /svix|webhook|signature|token|secret|sumopod|hmac|x-/i.test(k)
+            )
+          )
+        ),
+        "body:", rawBody.slice(0, 300)
+      );
       console.error("[SumoPod Webhook] signature/token invalid");
       return res.status(401).json({ error: "Invalid signature" });
     }
