@@ -61,6 +61,11 @@ export default async function handler(req, res) {
     const evt = parseSumopodEvent(body);
     console.log("[SumoPod Webhook] event:", evt.type, evt.orderId, evt.status);
 
+    // Test ping dari dashboard: signature valid = cukup, ack saja.
+    if (String(evt.type || "").endsWith(".test")) {
+      return res.status(200).json({ received: true, note: "test_event" });
+    }
+
     if (!evt.orderId) {
       return res.status(400).json({ error: "Missing order_id" });
     }
